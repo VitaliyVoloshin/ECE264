@@ -30,8 +30,8 @@ void print_integer(int n, int radix)
 	int remainder;
 	int idx = 0;
 	int idx2 = 0;
-	char* buffer[idx];
-	
+	char buffer[100];
+
 	while(quot1 != 0)
 	{
 		quot1 = quot1 / radix;
@@ -39,9 +39,6 @@ void print_integer(int n, int radix)
 		quot2 = quot1;
 
 		buffer[idx] = remainder;
-		//tem = remainder;
-		//fputc(buffer[idx],stdout);
-
 		idx += 1;
 	}
 
@@ -49,19 +46,16 @@ void print_integer(int n, int radix)
 
 	while(idx2 >= 0)
 	{
-		//tem = (buffer[idx2]);
-		//fputc(tem, stdout);
-		//char a = '4';
-
-		//fputc(a,stdout);
-		fputc(buffer[idx2],stdout);
-		//printf("%c",buffer[idx2]);
+		//fputc(buffer[idx2],stdout);
+		
+		printf("%c",buffer[idx2]);
 		idx2 -= 1;
 	}
 	printf("\n");
 }
 
 // test bench
+
 int main(int argc, char* argv[])
 {
 	print_integer(100,2);	// convert 11 to base 10
@@ -71,3 +65,4 @@ int main(int argc, char* argv[])
 
 	return EXIT_SUCCESS;
 }
+
