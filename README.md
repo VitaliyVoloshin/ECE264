@@ -6,18 +6,18 @@ Linux:
 
 1. clone repo
 ```sh
-git clone [_ssh key to repo_]
+git clone [ssh key to repo]
 ```
 2. add files
 ```sh
-git add [_filenames or * to add all_]
+git add [filenames or * to add all]
 ```
 3. commit
 ```sh 
-git commit -m "[_message about what you changed_]"
+git commit -m "[message about what you changed]"
 ```
 4. push changes
 ```sh
 git push 
-[_enter ssh key pass when prompted_]
+[enter ssh key pass when prompted]
 ```
