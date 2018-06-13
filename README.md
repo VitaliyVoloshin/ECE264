@@ -1,6 +1,6 @@
 # ECE 26400
 > Advanced C Programming
-This repository contains work for ece264, taken at Purdue University.
+> This repository contains work for ece264, taken at Purdue University.
 ## Dev environment setup steps
 Linux:
 
