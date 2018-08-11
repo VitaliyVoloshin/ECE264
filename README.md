@@ -1,24 +1,12 @@
-# ECE 26400
-> Advanced C Programming
-#
-> This repository contains work for ece264, taken at Purdue University.
-## Dev environment setup steps
-Linux:
+# [ECE 26400](https://github.com/astpierre/ECE264)
+## Description
+> Advanced C Programming ~ Fall 2018
 
-1. clone repo
-```sh
-git clone [ssh key to repo]
-```
-2. add files
-```sh
-git add [filenames or * to add all]
-```
-3. commit
-```sh 
-git commit -m "[message about what you changed]"
-```
-4. push changes
-```sh
-git push 
-[enter ssh key pass when prompted]
-```
+## Git usage
+1. ```git clone <url from Github>```
+2. ```git add <filenames / * for all>```
+3. ```git commit -m "<note changes>"```
+4. ```git push origin```
+
+
+
