@@ -38,20 +38,22 @@ void ssort(int * arr, int size)
   // elements
   
   int ind;
-  int * tmp;
+  int tmp;
   int sub_ind;
-  int smallest_ind;
+  //int length_a;
+  //int length_b;
 
-  for (ind=0; ind < (size-1); ind++)
+  for (ind=0; ind < size; ++ind)
   	{
 	  sub_ind = ind;
-	  for (smallest_ind=ind+1; smallest_ind<size; smallest_ind++)
+	  for (sub_ind=ind+1; sub_ind<size; ++sub_ind)
 	  {
-	  	if (arr[smallest_ind] > arr[sub_ind])
+	  	
+	  	if (*&arr[sub_ind] > *&arr[ind])
 		{
-		  tmp = &arr[smallest_ind];
-		  arr[smallest_ind] = arr[sub_ind];
-		  arr[sub_ind] = *tmp;
+		  tmp = arr[sub_ind];
+		  arr[sub_ind] = arr[ind];
+		  arr[ind] = tmp;
 		}
 
 	  }

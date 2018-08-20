@@ -63,8 +63,49 @@ clean: # remove all machine generated files
 
 # DO NOT DELETE THIS LINE -- make depend depends on it.
 
-# determine the dependence of headers
-
-depend:
-	makedepend $(SRCS)
-
+add.o: header.h /usr/include/stdio.h /usr/include/features.h
+add.o: /usr/include/sys/cdefs.h /usr/include/bits/wordsize.h
+add.o: /usr/include/gnu/stubs.h /usr/include/gnu/stubs-64.h
+add.o: /usr/include/bits/types.h /usr/include/bits/typesizes.h
+add.o: /usr/include/libio.h /usr/include/_G_config.h /usr/include/wchar.h
+add.o: /usr/include/bits/stdio_lim.h /usr/include/bits/sys_errlist.h
+div.o: header.h /usr/include/stdio.h /usr/include/features.h
+div.o: /usr/include/sys/cdefs.h /usr/include/bits/wordsize.h
+div.o: /usr/include/gnu/stubs.h /usr/include/gnu/stubs-64.h
+div.o: /usr/include/bits/types.h /usr/include/bits/typesizes.h
+div.o: /usr/include/libio.h /usr/include/_G_config.h /usr/include/wchar.h
+div.o: /usr/include/bits/stdio_lim.h /usr/include/bits/sys_errlist.h
+mul.o: header.h /usr/include/stdio.h /usr/include/features.h
+mul.o: /usr/include/sys/cdefs.h /usr/include/bits/wordsize.h
+mul.o: /usr/include/gnu/stubs.h /usr/include/gnu/stubs-64.h
+mul.o: /usr/include/bits/types.h /usr/include/bits/typesizes.h
+mul.o: /usr/include/libio.h /usr/include/_G_config.h /usr/include/wchar.h
+mul.o: /usr/include/bits/stdio_lim.h /usr/include/bits/sys_errlist.h
+main.o: /usr/include/stdio.h /usr/include/features.h /usr/include/sys/cdefs.h
+main.o: /usr/include/bits/wordsize.h /usr/include/gnu/stubs.h
+main.o: /usr/include/gnu/stubs-64.h /usr/include/bits/types.h
+main.o: /usr/include/bits/typesizes.h /usr/include/libio.h
+main.o: /usr/include/_G_config.h /usr/include/wchar.h
+main.o: /usr/include/bits/stdio_lim.h /usr/include/bits/sys_errlist.h
+main.o: /usr/include/stdlib.h /usr/include/bits/waitflags.h
+main.o: /usr/include/bits/waitstatus.h /usr/include/endian.h
+main.o: /usr/include/bits/endian.h /usr/include/bits/byteswap.h
+main.o: /usr/include/sys/types.h /usr/include/time.h
+main.o: /usr/include/sys/select.h /usr/include/bits/select.h
+main.o: /usr/include/bits/sigset.h /usr/include/bits/time.h
+main.o: /usr/include/sys/sysmacros.h /usr/include/bits/pthreadtypes.h
+main.o: /usr/include/alloca.h /usr/include/string.h /usr/include/xlocale.h
+main.o: header.h
+solution.o: header.h /usr/include/stdio.h /usr/include/features.h
+solution.o: /usr/include/sys/cdefs.h /usr/include/bits/wordsize.h
+solution.o: /usr/include/gnu/stubs.h /usr/include/gnu/stubs-64.h
+solution.o: /usr/include/bits/types.h /usr/include/bits/typesizes.h
+solution.o: /usr/include/libio.h /usr/include/_G_config.h
+solution.o: /usr/include/wchar.h /usr/include/bits/stdio_lim.h
+solution.o: /usr/include/bits/sys_errlist.h
+sub.o: header.h /usr/include/stdio.h /usr/include/features.h
+sub.o: /usr/include/sys/cdefs.h /usr/include/bits/wordsize.h
+sub.o: /usr/include/gnu/stubs.h /usr/include/gnu/stubs-64.h
+sub.o: /usr/include/bits/types.h /usr/include/bits/typesizes.h
+sub.o: /usr/include/libio.h /usr/include/_G_config.h /usr/include/wchar.h
+sub.o: /usr/include/bits/stdio_lim.h /usr/include/bits/sys_errlist.h
