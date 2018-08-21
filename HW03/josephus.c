@@ -42,7 +42,7 @@ void eliminate(int n, int k)
 	  	  arr[idx] = killed;
 		  cnt_alive = cnt_alive - 1;
 		  ctr = 1;
-		  fprintf(stdout,"Killed idx: %d\n",idx);
+		  fprintf(stdout,"%d\n",idx);
 		}
 	  }
 	  else if (arr[idx] == 1)
