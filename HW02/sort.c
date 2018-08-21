@@ -38,24 +38,41 @@ void ssort(int * arr, int size)
   // elements
   
   int ind;
-  int tmp;
   int sub_ind;
-  //int length_a;
-  //int length_b;
+  int tmp = 0;
 
   for (ind=0; ind < size; ++ind)
   	{
 	  sub_ind = ind;
 	  for (sub_ind=ind+1; sub_ind<size; ++sub_ind)
 	  {
-	  	
-	  	if (*&arr[sub_ind] > *&arr[ind])
-		{
-		  tmp = arr[sub_ind];
-		  arr[sub_ind] = arr[ind];
-		  arr[ind] = tmp;
-		}
+	    int next = arr[sub_ind];
+		int current = arr[ind];
 
+		char current_len[100];
+		char next_len[100];
+		sprintf(current_len,"%d",current);
+		sprintf(next_len,"%d",next); 
+		int cl = 0;
+		int nl = 0;
+		for (cl=0;current_len[cl]!='\n';++cl);
+		for (nl=0;next_len[nl]!='\n';++nl);
+		/*
+		if (cl==nl)
+		{ 
+		  if (current > next)
+		  {
+		    tmp = arr[sub_ind];
+		    arr[sub_ind] = arr[ind];
+		    arr[ind] = tmp;
+		  }
+		}*/
+		if (cl > nl)
+		{
+			tmp = arr[sub_ind];
+			arr[sub_ind] = arr[ind];
+			arr[ind] = tmp;
+		}
 	  }
 	}
 
