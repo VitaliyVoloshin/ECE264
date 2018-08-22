@@ -37,7 +37,7 @@ void eliminate(int n, int k)
 	{ 
 	  if (ctr == k)
 	  {
-	  	if (arr[idx] == 1)
+	  	if (arr[idx] == alive)
 		{
 	  	  arr[idx] = killed;
 		  cnt_alive = cnt_alive - 1;
@@ -45,29 +45,13 @@ void eliminate(int n, int k)
 		  fprintf(stdout,"%d\n",idx);
 		}
 	  }
-	  else if (arr[idx] == 1)
+	  else if (arr[idx] == alive)
 	  {
 	    ctr = ctr + 1;
 	  }
 	}
   }
-	  
-  	
-  	
-  
-  // counting to k,
-  // mark the eliminated element
-  // print the index of the marked element
-  // repeat until only one element is unmarked
-
-
-
-  // print the last one
-
-
-
-
-  // release the memory of the array
   free (arr);
 }
 #endif
+
