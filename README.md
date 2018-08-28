@@ -6,7 +6,7 @@
 1.	Change to your ECE264 directory: ```cd ~/ECE264```
 2.	Remove prev config settings: ```git remote rm origin```
 3.	Add origin: ```git remote add origin git@github.com:astpierre/ECE264.git```
-4.	Generate new SSH key: ```ssh-keygen -t rsa -b 4096 -C "web@github.com```
+4.	Generate new SSH key: ```ssh-keygen -t rsa -b 4096 -C "web@github.com"```
 5.	Move key to proper folder: ```mv <keyname> ../.ssh```
 6.	Also move public key: ```mv <keyname>.pub ../.ssh```
 7.	Copy public key and add to Github repo: ```cat ~/.ssh/<keyname>.pub```
