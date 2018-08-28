@@ -98,13 +98,45 @@ int closestCentroid (int kval, DataPoint * datapoint, Centroid * *centroids)
 // return the total distances of datapoints from their centroids
 void kmean (int kval, int nval, DataPoint * *datapoints, Centroid * *centroids)
 {
+	int i = 0;
+	int MAX_KVAL = kval - 1;
+	int tmp_kval = 0;
+	int * cluster;
+	cluster = malloc(sizeof(*cluster)*nval);
+	if(cluster==NULL)
+	{
+		return EXIT_FAILURE;
+	}
+
+	// initialize cluster
+	for(i=0; i < nval; i++)
+	{
+		cluster[i] = 0;
+	}
+
+
+
+
+	for(i=0;i<nval;i++)
+	{
+		if(tmp_kval > MAX_KVAL)
+		{
+			tmp_kval = 0;
+		}
+		else
+		{
+
+		}
+
+	}
+
 		// reset all centroids
 		
 		// initialize each data point to a cluster between 0 and kval - 1
 
 		// find the centroid for initial random assignment of datapoints
 		
-		// Now start the loop till convergence is met - (Please see README for understanding kmean algorithm convergence condition)
+
 		// 
 		// 1. for each data point, find the index of the centroid that is the closest
 		// 2. store that index in DataPoint's structure's cluster value.
@@ -201,8 +233,9 @@ main (int argc, char * *argv)
   // calling kmean function to find the cetroids
   kmean (kval, nval, datapoint_array, centroids);
 
-	//writing those centroids to the file
+  //writing those centroids to the file
   writeCentroids (argv[3], centroids, kval);
+  
   // free all the allocated spaces
   DataPoint_freeArray (datapoint_array, nval);
   Centroid_freeArray (centroids, kval);
