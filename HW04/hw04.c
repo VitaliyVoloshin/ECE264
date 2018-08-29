@@ -60,91 +60,115 @@ void writeCentroids (const char *filename, Centroid * *centroids, int kval)
 long long int
 distance (const DataPoint * datapoint, const Centroid * centroid)
 {
-  // since this is for comparison only, there is no need to call sqrt
-  long long int sum = 0;	// must initialize to zero
-  sum = (long long int) (datapoint-centroid)*(datapoint-centroid);
-  // find Euclidean distance and then return 'sum' without calling sqrt
-  return sum;
+	int diter=0;
+	long long int sum=0;
+	int dim=datapoint->dimension;
+	int tmp=0;
+
+	for(diter=0;diter<dim;diter++)
+	{
+		tmp = (long long int)((datapoint->data[diter])-(centroid->data[diter]));
+		sum += (tmp*tmp);
+	}
+	return sum;
 }
 
 #endif	
    
 #ifdef TEST_CLOSESTCENTROID
-  
-// for a data point, find the closest centroid
-// 1. calculate the distance between the data point and the first
-// centroid, set it to the minimum distance
-// 2. go through the other centroids and calculate distance from each.
-// 3. Keep on updating minimum distance and index value of the
-// centroid from which the distance is smaller than previously seen,
 int closestCentroid (int kval, DataPoint * datapoint, Centroid * *centroids)
 {
-  int mindex; //index of the closest centroid 
-  
-  // go through each centroid and find the distance
-  // keep track of minimum difference and index of centroid which has the smallest distance
+  int mindex;
+  int MAX_KVAL = kval;
+  long long int c_dis = 0;
+  long long int p_dis = 0;
+  int kiter=1;
+
+  p_dis = distance(datapoint,centroids[0]);
+  mindex = datapoint->cluster;
+  for(kiter=1;kiter<MAX_KVAL;kiter++)
+  {
+	  c_dis = distance(datapoint,centroids[kiter]);
+	  if(c_dis < p_dis)
+	  {
+		  mindex = kiter;
+	  }
+	  p_dis = c_dis;
+  }
+   
   return mindex;
 }
-
 #endif	
     
 #ifdef TEST_KMEAN
-// kmean - function which finds the k clusters in the data set
-// kval - # of clusters
-// nval - # of datapoints
-// datapoints - array of datapoints
-// centroids - array of centroids
-//
-// return the total distances of datapoints from their centroids
 void kmean (int kval, int nval, DataPoint * *datapoints, Centroid * *centroids)
 {
-	int i = 0;
-	int MAX_KVAL = kval - 1;
-	int tmp_kval = 0;
-	int * cluster;
-	cluster = malloc(sizeof(*cluster)*nval);
-	if(cluster==NULL)
+	int MAX_KVAL = kval;
+	int kiter = 0;
+	int niter = 0;
+	int convergence = 0;
+	int prev_cluster;
+	int closest_centroid;
+
+	// Reset all centroids
+	for(kiter=0;kiter<MAX_KVAL;kiter++)
 	{
-		return EXIT_FAILURE;
+		Centroid_reset(centroids[kiter]);
 	}
 
-	// initialize cluster
-	for(i=0; i < nval; i++)
+	// Assign datapoints to random centroid cluster
+	for(niter=0;niter<nval;niter++)
 	{
-		cluster[i] = 0;
-	}
-
-
-
-
-	for(i=0;i<nval;i++)
-	{
-		if(tmp_kval > MAX_KVAL)
+		if(kiter >= MAX_KVAL)
 		{
-			tmp_kval = 0;
+			kiter = 0;
 		}
-		else
-		{
-
-		}
-
+		datapoints[niter]->cluster = kiter;
+		Centroid_addPoint(centroids[kiter],datapoints[niter]);
+		kiter += 1;
 	}
 
-		// reset all centroids
-		
-		// initialize each data point to a cluster between 0 and kval - 1
+	while(convergence != 1)
+	{
+		// Calculate centroids for each of these clusters
+		for(kiter=0;kiter<MAX_KVAL;kiter++)
+		{	
+			Centroid_findCenter(centroids[kiter]);
+		}
+	
+		// For each data point, find the index of the centroid that is the closest
+		convergence = 1; // Temporarily set T, will be changed by loop if F
+		for(niter=0;niter<nval;niter++)
+		{
+			prev_cluster = datapoints[niter]->cluster;
+			closest_centroid = closestCentroid(kval,datapoints[niter],centroids);
+			datapoints[niter]->cluster = closest_centroid;
+			if(prev_cluster != closest_centroid)
+			{
+				convergence = 0;
+			}
+		}
 
-		// find the centroid for initial random assignment of datapoints
-		
+		// Reset all centroids
+		for(kiter=0;kiter<MAX_KVAL;kiter++)
+		{
+			Centroid_reset(centroids[kiter]);
+		}
 
-		// 
-		// 1. for each data point, find the index of the centroid that is the closest
-		// 2. store that index in DataPoint's structure's cluster value.
-		// 3. reset all the centroids
-		// 4. go through each datapoint again and add this datapoint to its centroid using Centroid_addPoint function
-		// 5. find the new centroid for each cluster by calling Centroid_findCenter 
+		// Go through each datapoint again and add this datapoint to its centroid
+		for(niter=0;niter<nval;niter++)
+		{	
+			Centroid_addPoint(centroids[datapoints[niter]->cluster],datapoints[niter]);
+		}
+
+		// Update centroids for clusters
+		for(kiter=0;kiter<MAX_KVAL;kiter++)
+		{
+			Centroid_findCenter(centroids[kiter]);
+		}
+	}
 }
- 
+
 #endif	
   
 /*===== DO NOT MODIFY BELOW THIS ======*/ 
