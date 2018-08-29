@@ -63,12 +63,16 @@ distance (const DataPoint * datapoint, const Centroid * centroid)
 	int diter=0;
 	long long int sum=0;
 	int dim=datapoint->dimension;
-	int tmp=0;
+	long long int tmp=0;
+	long long int dpval=0;
+	long long int ctdval=0;
 
 	for(diter=0;diter<dim;diter++)
 	{
-		tmp = (long long int)((datapoint->data[diter])-(centroid->data[diter]));
-		sum += (tmp*tmp);
+		dpval = (long long int)(datapoint->data[diter]);
+		ctdval = (long long int)(centroid->data[diter]);
+		tmp = (long long int)(ctdval-dpval);
+		sum = sum + (tmp*tmp);
 	}
 	return sum;
 }
@@ -85,17 +89,16 @@ int closestCentroid (int kval, DataPoint * datapoint, Centroid * *centroids)
   int kiter=1;
 
   p_dis = distance(datapoint,centroids[0]);
-  mindex = datapoint->cluster;
+  mindex = 0;
   for(kiter=1;kiter<MAX_KVAL;kiter++)
   {
 	  c_dis = distance(datapoint,centroids[kiter]);
 	  if(c_dis < p_dis)
 	  {
 		  mindex = kiter;
+		  p_dis = c_dis;
 	  }
-	  p_dis = c_dis;
-  }
-   
+  }  
   return mindex;
 }
 #endif	
@@ -128,7 +131,7 @@ void kmean (int kval, int nval, DataPoint * *datapoints, Centroid * *centroids)
 		kiter += 1;
 	}
 
-	while(convergence != 1)
+	while(convergence < 100)
 	{
 		// Calculate centroids for each of these clusters
 		for(kiter=0;kiter<MAX_KVAL;kiter++)
@@ -137,17 +140,23 @@ void kmean (int kval, int nval, DataPoint * *datapoints, Centroid * *centroids)
 		}
 	
 		// For each data point, find the index of the centroid that is the closest
-		convergence = 1; // Temporarily set T, will be changed by loop if F
+		//convergence = 1; // Temporarily set T, will be changed by loop if F
 		for(niter=0;niter<nval;niter++)
 		{
 			prev_cluster = datapoints[niter]->cluster;
 			closest_centroid = closestCentroid(kval,datapoints[niter],centroids);
 			datapoints[niter]->cluster = closest_centroid;
-			if(prev_cluster != closest_centroid)
+			/*if((int)prev_cluster != (int)closest_centroid)
 			{
-				convergence = 0;
-			}
+				//convergence = 0;
+			}*/
 		}
+		convergence += 1;
+
+		/*if(convergence==1)
+		{
+			break;
+		}*/
 
 		// Reset all centroids
 		for(kiter=0;kiter<MAX_KVAL;kiter++)
@@ -167,8 +176,8 @@ void kmean (int kval, int nval, DataPoint * *datapoints, Centroid * *centroids)
 			Centroid_findCenter(centroids[kiter]);
 		}
 	}
+	return;
 }
-
 #endif	
   
 /*===== DO NOT MODIFY BELOW THIS ======*/ 
