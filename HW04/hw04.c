@@ -64,15 +64,19 @@ distance (const DataPoint * datapoint, const Centroid * centroid)
 	long long int sum=0;
 	int dim=datapoint->dimension;
 	long long int tmp=0;
-	long long int dpval=0;
-	long long int ctdval=0;
 
 	for(diter=0;diter<dim;diter++)
 	{
-		dpval = (long long int)(datapoint->data[diter]);
-		ctdval = (long long int)(centroid->data[diter]);
-		tmp = (long long int)(ctdval-dpval);
-		sum = sum + (tmp*tmp);
+		if((centroid->data)[diter] != (datapoint->data)[diter])
+		{
+			tmp=((centroid->data)[diter] - (datapoint->data)[diter]);
+			tmp=(long long int)pow((double)tmp,(double)2);
+			sum = sum + tmp;
+		}
+		else
+		{
+			sum = sum + 0;
+		}
 	}
 	return sum;
 }
@@ -93,10 +97,14 @@ int closestCentroid (int kval, DataPoint * datapoint, Centroid * *centroids)
   for(kiter=1;kiter<MAX_KVAL;kiter++)
   {
 	  c_dis = distance(datapoint,centroids[kiter]);
-	  if(c_dis < p_dis)
+	  if((long long int)c_dis <= (long long int)p_dis)
 	  {
 		  mindex = kiter;
 		  p_dis = c_dis;
+	  }
+	  else
+	  {
+		  mindex = mindex;
 	  }
   }  
   return mindex;
@@ -131,7 +139,7 @@ void kmean (int kval, int nval, DataPoint * *datapoints, Centroid * *centroids)
 		kiter += 1;
 	}
 
-	while(convergence < 100)
+	while(convergence != 1)
 	{
 		// Calculate centroids for each of these clusters
 		for(kiter=0;kiter<MAX_KVAL;kiter++)
@@ -140,23 +148,23 @@ void kmean (int kval, int nval, DataPoint * *datapoints, Centroid * *centroids)
 		}
 	
 		// For each data point, find the index of the centroid that is the closest
-		//convergence = 1; // Temporarily set T, will be changed by loop if F
+		convergence = 1; // Temporarily set T, will be changed by loop if F
 		for(niter=0;niter<nval;niter++)
 		{
 			prev_cluster = datapoints[niter]->cluster;
 			closest_centroid = closestCentroid(kval,datapoints[niter],centroids);
 			datapoints[niter]->cluster = closest_centroid;
-			/*if((int)prev_cluster != (int)closest_centroid)
+			if((int)prev_cluster != (int)closest_centroid)
 			{
-				//convergence = 0;
-			}*/
+				convergence = 0;
+			}
 		}
-		convergence += 1;
+		//convergence += 1;
 
-		/*if(convergence==1)
+		if(convergence==1)
 		{
 			break;
-		}*/
+		}
 
 		// Reset all centroids
 		for(kiter=0;kiter<MAX_KVAL;kiter++)
