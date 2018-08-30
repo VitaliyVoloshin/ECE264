@@ -120,6 +120,7 @@ void kmean (int kval, int nval, DataPoint * *datapoints, Centroid * *centroids)
 	int convergence = 0;
 	int prev_cluster;
 	int closest_centroid;
+	int cvg = 0;
 
 	// Reset all centroids
 	for(kiter=0;kiter<MAX_KVAL;kiter++)
@@ -138,6 +139,11 @@ void kmean (int kval, int nval, DataPoint * *datapoints, Centroid * *centroids)
 		Centroid_addPoint(centroids[kiter],datapoints[niter]);
 		kiter += 1;
 	}
+	// Calculate centroids for each of these clusters
+	for(kiter=0;kiter<MAX_KVAL;kiter++)
+	{	
+		Centroid_findCenter(centroids[kiter]);
+	}
 
 	while(convergence != 1)
 	{
@@ -148,40 +154,42 @@ void kmean (int kval, int nval, DataPoint * *datapoints, Centroid * *centroids)
 		}
 	
 		// For each data point, find the index of the centroid that is the closest
-		convergence = 1; // Temporarily set T, will be changed by loop if F
+		cvg = 1; // Temporarily set T, will be changed by loop if F
 		for(niter=0;niter<nval;niter++)
 		{
 			prev_cluster = datapoints[niter]->cluster;
-			closest_centroid = closestCentroid(kval,datapoints[niter],centroids);
-			datapoints[niter]->cluster = closest_centroid;
+			closest_centroid = closestCentroid(kval,datapoints[niter],centroids);	
 			if((int)prev_cluster != (int)closest_centroid)
 			{
-				convergence = 0;
+				datapoints[niter]->cluster = closest_centroid;
+				cvg = 0;
 			}
 		}
 		//convergence += 1;
 
-		if(convergence==1)
+		if(cvg==1)
 		{
 			break;
 		}
-
-		// Reset all centroids
-		for(kiter=0;kiter<MAX_KVAL;kiter++)
+		else
 		{
-			Centroid_reset(centroids[kiter]);
-		}
+			// Reset all centroids
+			for(kiter=0;kiter<MAX_KVAL;kiter++)
+			{
+				Centroid_reset(centroids[kiter]);
+			}
 
-		// Go through each datapoint again and add this datapoint to its centroid
-		for(niter=0;niter<nval;niter++)
-		{	
-			Centroid_addPoint(centroids[datapoints[niter]->cluster],datapoints[niter]);
-		}
+			// Go through each datapoint again and add this datapoint to its centroid
+			for(niter=0;niter<nval;niter++)
+			{	
+				Centroid_addPoint(centroids[datapoints[niter]->cluster],datapoints[niter]);
+			}
 
-		// Update centroids for clusters
-		for(kiter=0;kiter<MAX_KVAL;kiter++)
-		{
-			Centroid_findCenter(centroids[kiter]);
+			// Update centroids for clusters
+			for(kiter=0;kiter<MAX_KVAL;kiter++)
+			{
+				Centroid_findCenter(centroids[kiter]);
+			}
 		}
 	}
 	return;
