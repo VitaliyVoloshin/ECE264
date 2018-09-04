@@ -61,20 +61,12 @@ distance (const DataPoint * datapoint, const Centroid * centroid)
 	long long int sum=0;
 	int dim=datapoint->dimension;
 	long long int tmp=0;
-
+	
+	// For each dimension, square difference
 	for(diter=0;diter<dim;diter++)
 	{
-		if((centroid->data)[diter] != (datapoint->data)[diter])
-		{
-		  tmp=((centroid->data[diter]) - (datapoint->data[diter]));
-			tmp=tmp*tmp;
-			sum = sum + tmp;
-		}
-		else
-		{
-			sum = sum + 0;
-		}
-		
+		tmp=((centroid->data[diter]) - (datapoint->data[diter]));
+		sum += (tmp*tmp);
 	}
 	return sum;
 }
@@ -84,28 +76,27 @@ distance (const DataPoint * datapoint, const Centroid * centroid)
 #ifdef TEST_CLOSESTCENTROID
 int closestCentroid (int kval, DataPoint * datapoint, Centroid * *centroids)
 {
-  int mindex;
-  int MAX_KVAL = kval;
-  long long int c_dis = 0;
-  long long int p_dis = 0;
-  int kiter=1;
+	
+  	int mindex;
+  	int MAX_KVAL = kval;
+  	long long int c_dis = 0;
+  	long long int p_dis = 0;
+  	int kiter=1;
 
-  p_dis = distance(datapoint,centroids[0]);
-  mindex = 0;
-  for(kiter=1;kiter<MAX_KVAL;kiter++)
-  {
-	  c_dis = distance(datapoint,centroids[kiter]);
-	  if((long long int)c_dis < (long long int)p_dis)
-	  {
-		  mindex = kiter;
-		  p_dis = c_dis;
-	  }
-	  else
-	  {
-		  mindex = mindex;
-	  }
-  }  
-  return mindex;
+	// Check if the prev > current centroid in iteration
+  	p_dis = distance(datapoint,centroids[0]);
+  	mindex = 0;
+  	for(kiter=1;kiter<MAX_KVAL;kiter++)
+  	{
+	  	c_dis = distance(datapoint,centroids[kiter]);
+	 	if((long long int)c_dis < (long long int)p_dis)
+	  	{
+			// If true, change the min to return
+		 	mindex = kiter;
+		  	p_dis = c_dis;
+	  	}
+  	}  
+  	return mindex;
 }
 #endif	
     
@@ -127,16 +118,11 @@ void kmean (int kval, int nval, DataPoint * *datapoints, Centroid * *centroids)
 	}
 
 	// Assign datapoints to random centroid cluster
-	kiter = 0;
 	for(niter=0;niter<nval;niter++)
 	{
-		if(kiter >= MAX_KVAL)
-		{
-			kiter = 0;
-		}
-		datapoints[niter]->cluster = kiter;
-		Centroid_addPoint(centroids[kiter],datapoints[niter]);
-		kiter += 1;
+		int clu = rand() % kval;
+		datapoints[niter]->cluster = clu;
+		Centroid_addPoint(centroids[clu],datapoints[niter]);
 	}
 
 	// Find centroid centers
@@ -195,7 +181,7 @@ main (int argc, char * *argv)
       fprintf (stderr, "argc is %d, not 4\n", argc);
       return EXIT_FAILURE;
     }
-   
+
   // opening file to read the data points from
   FILE * fpin = fopen (argv[1], "r");
   if (fpin == NULL)
