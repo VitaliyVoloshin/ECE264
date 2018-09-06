@@ -13,26 +13,45 @@
 #ifdef TEST_MAIN
 int main(int argc, char * * argv)
 {
-    // input file will be specified from the terminal - test files are made available in inputs folder
+	// argv[1] = in_file
+	// argv[2] = out_file
+	
+	// Check to make sure we are supplied with correct inputs from terminal
+	if (argc != 3)
+	{
+		fprintf(stderr, "need input file and output file locations\n");
+		return EXIT_FAILURE;
+	}
 
-    // check for missing input file/output file, if so, "return EXIT_FAILURE;"
+	// Save input file name
+	char * in_file = argv[1];
+	
+	// Save output file name
+	char * out_file = argv[2];
 
-    // store the input file name in a variable, from argv[1]. For example, char* in_file = argv[1];
-    // store the output file name in a variable, from argv[2]. For example, char* out_file = argv[2];
+    // Get # of elements in file
+	int count = 0;
+	count = numberOfElements(in_file);
+	
+    // Allocate memory to store the numbers (initialize an array of structures)
+	Vector * vector = malloc(sizeof(Vector) * count);
+	if (vector == NULL)
+	{
+		fprintf(stderr, "malloc fail\n");
+		return EXIT_FAILURE;
+	}
+	
+	// Call fillVector(vector, count, in_file) to store elements in an array of structures
+	fillVector(vector, count, in_file);
 
-    // call numberOfElements(in_file) to obtain the number of elements in the file.
+    // Use qsort() function, after defining the cmp() function WRT "x"
+	qsort(vector, count, sizeof(Vector), cmp);
 
-    // allocate memory to store the numbers (initialize an array of structures)
-            // check for malloc fail, if so, "return EXIT_FAILURE;"
-  
-    //call the fillVector(vector, count, in_file); and store the values from the file in the array of strucures.
-  
+    // Call the writeFile() to save sorted vector to file
+	writeFile(vector, count, out_file);
 
-    //Use qsort() function, after defining the comparator() function.
-            //ENSURE THE COMPARATOR FUNCTION IS USED TO SORT THE ARRAY OF STRUCTURES W.R.T. THE STRUCTURE VARIABLE "x".
-  
-
-    //call the writeFile(vector,count, out_file); to save the sorted vector into the file.
+	// Cleanup
+	free(vector);
     return EXIT_SUCCESS;
 }
 #endif

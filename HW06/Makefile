@@ -17,16 +17,25 @@ hw06: $(OBJS)
 .c.o: 
 	$(GCC) $(TESTFALGS) -c $*.c 
 
+testall: test1 test2 test3
+
+testadd: hw06
+	test1
+	test2
+	test3
+
 test1: hw06
 	./hw06 inputs/test1.bin output1.bin
-	#run diff between output1.bin and expected/expected1.bin
+	diff -i -w output1.bin expected/expected1.bin
 
 test2: hw06
 	./hw06 inputs/test2.bin output2.bin
-	#run diff between output2.bin and expected/expected2.bin
+	diff -i -w output2.bin expected/expected2.bin
 
 test3: hw06
 	./hw06 inputs/test3.bin output3.bin
-	#run diff between output3.bin and expected/expected3.bin
+	diff -i -w output3.bin expected/expected3.bin
 
 clean: # remove all machine generated files
+	rm -f hw06 *.o output?
+	rm -f *.bin
