@@ -25,7 +25,7 @@ int cmp(const void *a, const void *b)
 int numberOfElements(char* in_file_name)
 {
 	// Open file
-	FILE * fptr = fopen(in_file_name, "r");
+	FILE * fptr = fopen(in_file_name, "rb");
 	if (fptr == NULL)
 	{
 		fprintf(stderr, "fopen fail\n");
@@ -53,7 +53,7 @@ int numberOfElements(char* in_file_name)
 void fillVector(Vector* vector, int count, char * in_file_name)
 {
    	// Open file
-	FILE * fptr = fopen(in_file_name, "r");
+	FILE * fptr = fopen(in_file_name, "rb");
     
 	// Fill vector
     fread(vector, sizeof(Vector), count, fptr);
@@ -67,7 +67,7 @@ void fillVector(Vector* vector, int count, char * in_file_name)
 void writeFile(Vector* vector, int count, char* out_file_name)
 {
 	// Open file
-	FILE * fptr = fopen(out_file_name, "w");
+	FILE * fptr = fopen(out_file_name, "wb");
 	
 	// Write outputs
 	fwrite(vector, sizeof(Vector), count, fptr);

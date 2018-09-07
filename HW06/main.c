@@ -40,7 +40,7 @@ int main(int argc, char * * argv)
 		fprintf(stderr, "malloc fail\n");
 		return EXIT_FAILURE;
 	}
-	
+
 	// Call fillVector(vector, count, in_file) to store elements in an array of structures
 	fillVector(vector, count, in_file);
 
