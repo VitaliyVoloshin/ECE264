@@ -3,9 +3,8 @@
 #include <stdlib.h> 
 #include <string.h> 
 #include <stdbool.h>
+
 #ifdef TEST_MERGE
-/* The merge(arr, l, m, r) is key process that assumes that arr[l..m] and 
-arr[m+1..r] are sorted and merges the two sorted sub-arrays into one. */
 void merge(int arr[], int l, int m, int r) 
 {
 	// l = index of start of left sub array
@@ -23,7 +22,8 @@ void merge(int arr[], int l, int m, int r)
     //	R[] is the right sub array 
  
     // Initialise variables
-	int i = 0;	
+	int idx = l;
+	int i;
 	int l_ind = 0;
 	int r_ind = 0;
 
@@ -37,97 +37,53 @@ void merge(int arr[], int l, int m, int r)
 		R[i] = arr[m+i+1];
 	}
 
-	i = l;
-	while (i <= r)
+	// Sort data back into array
+	while (l_ind<n1 && r_ind<n2)
 	{
-		// Even arrays
-		if ((l_ind == n1) && (r_ind == n2))
-		{	
-			break;
-		}
-		// Odd arrays (R longer than L)
-		else if (l_ind == n1)
+		if ((int)L[l_ind] < (int)R[r_ind])
 		{
-			arr[i] = R[r_ind];	
-			break;
+			arr[idx++] = L[l_ind++];	
 		}
-		// Odd arrays (L longer than R)
-		else if (r_ind == n2)
+		else
 		{
-			arr[i] = L[l_ind];	
-			break;	
-		}
-
-		// Select the min of the two heads
-		if (L[l_ind] <= R[r_ind])
-		{
-			arr[i] = L[l_ind];
-			i++;
-			if (l_ind < n1)
-			{
-				l_ind++;
-			}
-		}
-		else if (R[r_ind] <= L[l_ind])
-		{
-			arr[i] = R[r_ind];
-			i++;
-			if (r_ind < n2)
-			{
-				r_ind++;
-			}
+			arr[idx++] = R[r_ind++];	
 		}
 	}
- 	// DO not modify below this line until specified in comments
+
+	// Check for remaining numbers
+	while (l_ind<n1)
+	{
+		arr[idx++] = L[l_ind++];	
+	}
+	while (r_ind<n2)
+	{
+		arr[idx++] = R[r_ind++];
+	}
+
+	// Free memory
+	free(L);
+	free(R);
+	
 }
 #endif
 
-/* Merge Sort uses recursion to call itself. Thus, efficiently dividing the array into two halves.
-Then it must sort each half individually and finally join them back together using merge() into a single sorted array*/ 
 #ifdef TEST_MERGESSORT
 void mergeSort(int arr[], int l, int r) 
 {
  	// int l defines the start index of the left sub array
     // int r defines the end index of the right sub array
-    	
+
 	// Variable declaration
-	int m = l+(r-l)/2;
-	int x = 0;
+	int m;
 	
 	// Recursion condition
-	if (m > 1)
+	if (l<r)
 	{
+		m = (r+l)/2;
 		mergeSort(arr,l,m);
 		mergeSort(arr,m+1,r);
-		//merge(arr,l,m,r);
+		merge(arr,l,m,r);
 	}
-	else if (m == 1)
-	{
-		// Sort first half arr[l...m]
-		if (arr[l] > arr[m])
-		{
-			x = arr[l];
-			arr[l] = arr[m];
-			arr[m] = x;
-		}
-
-		// Sort second half arr[m+1...r]
-		if (arr[m+1] > arr[r])
-		{
-			x = arr[m+1];
-			arr[m+1] = arr[r];
-			arr[r] = x;
-		}
-
-		// Call merge() to arrange in order
-		merge(arr, l, m, r);
-		//break;
-	}
-
-	merge(arr,l,m,r); 
-    
-	// DO not modify below this line until specified in comments
-	
 } 
 #endif
 
@@ -197,5 +153,7 @@ int main(int argc, char * * argv)
     }
  
   	free (arr);
+	fclose(fp);
+
   	return EXIT_SUCCESS;
 }
