@@ -21,29 +21,84 @@ void divide(CardDeck orig_deck, CardDeck * upper_deck, CardDeck * lower_deck)
 #endif
 
 #ifdef TEST_INTER
+void combine(CardDeck combined_deck, CardDeck upper_deck, CardDeck lower_deck)
+{
+	// Check that upper deck !empty, if so, empty lower and print
+	if (upper_deck.size == 0)
+    {
+        // If empty, add remaining lower_deck cards
+        for(int i=0; i<lower_deck.size; i++)
+        {
+            // Use memcpy() to copy each card to new deck
+            memcpy(combined_deck.cards[combined_deck.size], lower_deck.cards[i], sizeof(lower_deck.cards[0]));
+            // Update the size of new_deck
+            combined_deck.size = combined_deck.size + 1;
+        }
+        // Print / output deck
+        print_deck(combined_deck);
+    }
+    // Check that lower deck !empty, if so, empty upper and print
+	if (lower_deck.size == 0)
+    {
+        // If so, add remaining upper_deck cards
+        for(int i=0; i<upper_deck.size; i++)
+        {
+            // Use memcpy() to copy each card to new deck
+            memcpy(combined_deck.cards[combined_deck.size], upper_deck.cards[i], sizeof(upper_deck.cards[0]));
+            // Update the size of combined_deck
+            combined_deck.size = combined_deck.size + 1;
+        }
+        // Print / output deck
+        print_deck(combined_deck);
+    }
+
+    /*************************************************************************/
+    // Make a new upper deck for recursive calling
+    CardDeck new_upper_deck;
+    new_upper_deck.size = 0;
+    new_upper_deck.cards = 0;
+	// Pick from upper deck, add to new deck
+    memcpy(combined_deck.cards[combined_deck.size], upper_deck.cards[0], sizeof(upper_deck.cards[0]));
+    combined_deck.size += 1;
+    // Fill the new upper deck with cards
+    for(int i=1; i<upper_deck.size; i++)
+    {
+        memcpy(new_upper_deck.cards[new_upper_deck.size], upper_deck.cards[i], sizeof(upper_deck.cards[0]));
+        new_upper_deck.size += 1;
+    }
+    // Call reursively
+    combine(combined_deck, new_upper_deck, lower_deck);
+    /*************************************************************************/
+    /*************************************************************************/
+    // Make a new lower deck for recursive calling
+    CardDeck new_lower_deck;
+    new_lower_deck.size = 0;
+    new_lower_deck.cards = 0;
+	// Pick from lower deck, add to new deck
+    memcpy(combined_deck.cards[combined_deck.size], lower_deck.cards[0], sizeof(lower_deck.cards[0]));
+    combined_deck.size += 1;
+    // Fill the new lower deck with cards
+    for(int i=1; i<lower_deck.size; i++)
+    {
+        memcpy(new_lower_deck.cards[new_lower_deck.size], lower_deck.cards[i], sizeof(lower_deck.cards[0]));
+        new_lower_deck.size += 1;
+    }
+    // Call reursively
+    combine(combined_deck, upper_deck, new_lower_deck);
+    /*************************************************************************/
+}
+#endif
+
+#ifdef TEST_INTER
 void interleave(CardDeck upper_deck, CardDeck lower_deck)
 {
-	// Check that upper deck !empty
-	if (upper_deck.size == 0)
+	// Instantiate deck to hold interleaved decks
+	CardDeck new_deck;
+    new_deck.size = 0;
+    new_deck.cards = 0;
 
-	// Check that lower deck !empty
-	
-	// Pick from upper deck
-	
-	// Update and call recursively
-	
-	// Pick from lower deck
-	
-	// Update and call recursively
-   
-	
-	// Follow instructions in the README, to understand the working of the recursive function.
-    // Use print_deck(…) to print each resulting order.
-    // Tip: There should be no uncertainty in this function.
-        // If you think a random number generator is needed, you are on the wrong track.
-    // Tip: To copy the elements of one array from one array to another (e.g., the array of cards in a CardDeck),
-        //you could use memcpy(…).
-        //The = operator will simply copy the address, not the elements themselves.
+    // Call combine() to do the interleaving
+    combine(new_deck, upper_deck, lower_deck);  
 }
 #endif
 
@@ -51,7 +106,7 @@ void interleave(CardDeck upper_deck, CardDeck lower_deck)
 void shuffle(CardDeck orig_deck)
 {
     // Declare a variable to hold the number of pairs
-	int number_pairs = orig_deck->size - 1;
+	int number_pairs = orig_deck.size - 1;
 	if(number_pairs == 0) return EXIT_FAILURE;
 
 	// Instantiate pointers to hold both upper and lower decks (after division)
@@ -59,8 +114,8 @@ void shuffle(CardDeck orig_deck)
 	CardDeck * lower_deck = NULL;
 
 	// allocate memory based on number of pairs
-	upper_deck = malloc(numpairs*sizeof(CardDeck));
-	lower_deck = malloc(numpairs*sizeof(CardDeck));
+	upper_deck = malloc(number_pairs*sizeof(CardDeck));
+	lower_deck = malloc(number_pairs*sizeof(CardDeck));
 
 	// Call divideDeck to fill upper_deck and lower_deck
 	divide(orig_deck, upper_deck, lower_deck);

@@ -17,8 +17,8 @@ int main(int argc, char ** argv)
 	orig_deck.size = MAX_SIZE;
 	orig_deck.cards = 0;
 
-    	// Use memcpy(),
-    	memcpy(orig_dec.cards, deck, MAX_SIZE*sizeof(orig_deck.cards[0]));
+    // Use memcpy(),
+    memcpy(orig_deck.cards, deck, MAX_SIZE*sizeof(orig_deck.cards[0]));
 	
 	// Read the number of cards from the terminal input
 	orig_deck.size = strtol(argv[1], NULL, 10);

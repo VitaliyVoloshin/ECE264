@@ -5,10 +5,9 @@ WARNING = -Wall -Wshadow --pedantic
 ERROR = -Wvla -Werror
 GCC = gcc -std=c99 -g $(WARNING) $(ERROR)
 
-#declare test flags, for example: TESTFALGS = -DTEST_MAIN -DTEST_SHUF -DTEST_INTER -DTEST_DIV
+TESTFALGS = -DTEST_MAIN -DTEST_SHUF -DTEST_INTER -DTEST_DIV
 
 SRCS =  main.c utility.c shuffle.c
-
 OBJS = $(SRCS:%.c=%.o)
 
 VALGRIND = valgrind --tool=memcheck --verbose --log-file
@@ -16,12 +15,22 @@ VALGRIND = valgrind --tool=memcheck --verbose --log-file
 $(TARGET): $(OBJS)
 	$(GCC) $(TESTFALGS) $(OBJS) -o $(TARGET)
 
+.c.o:
+	$(GCC) $(TESTFALGS) -c $*.c
+
+testall: test1 test2 test3
+
+testadd: $(TARGET)
+	test1
+	test2
+	test3
+
 #val:
 #	$(VALGRIND)=./logfile ./shuf
 
 test1: shuf
 	./shuf 4 > output1
-	#run diff between output1 expected/expected1
+	diff -i -w output1 expected/expected1
 	
 test2: shuf
 	./shuf 8 > output2
