@@ -143,7 +143,9 @@ void shuffle(CardDeck orig_deck, int repeat)
 
 	// allocate memory based on number of pairs
 	upper_deck = malloc(number_pairs*sizeof(CardDeck));
+    if(upper_deck == NULL) return;
 	lower_deck = malloc(number_pairs*sizeof(CardDeck));
+    if(lower_deck == NULL) {  free(upper_deck); return;  }
 
 	// Call divideDeck to fill upper_deck and lower_deck
 	divide(orig_deck, upper_deck, lower_deck);
@@ -165,5 +167,8 @@ void repeat_shuffle(CardDeck orig_deck, int k)
 	
 	// Call shuffle()
     shuffle(orig_deck, k);
+
+    // If reach here, malloc failed, return
+    return;
 }
 #endif

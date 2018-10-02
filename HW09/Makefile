@@ -18,18 +18,19 @@ $(TARGET): $(OBJS)
 .c.o:
 	$(GCC) $(TESTFLAGS) -c $*.c
 
-testall: test1 test2 test3
+testall: test1 test2 test3 test4 testmemory
 
 testadd: $(TARGET)
 	test1
 	test2
 	test3
+	test4
 	testmemory
 
 testmemory:	$(TARGET)
-	$(VALGRIND) ./shuf 4 | sort > output1.txt
-	$(VALGRIND) ./shuf 8 | sort > output2.txt
-	$(VALGRIND) ./shuf 11 | sort > output3.txt
+	$(VALGRIND) ./shuf 2 2 | sort > output1.txt
+	$(VALGRIND) ./shuf 4 3 | sort > output2.txt
+	$(VALGRIND) ./shuf 7 2 | sort > output3.txt
 
 test1: $(TARGET)
 	./shuf 2 2 | sort > output1.txt
@@ -42,6 +43,9 @@ test2: $(TARGET)
 test3: $(TARGET)
 	./shuf 7 2 | sort > output3.txt
 	diff -i -w output3.txt expected/expected3
+
+test4: $(TARGET)
+	./shuf 4 6 | sort > output4.txt
 
 clean:
 	rm -f $(OBJS) $(TARGET)
