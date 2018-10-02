@@ -1,35 +1,48 @@
+# Makefile
+
 TARGET = shuf
-GCC = gcc
-CFLAGS = -g -std=c99 -Wall -Wshadow -Wvla -Werror -pedantic
-CC = $(GCC) $(CFLAGS)
+WARNING = -Wall -Wshadow --pedantic
+ERROR = -Wvla -Werror
+GCC = gcc -std=c99 -g $(WARNING) $(ERROR)
 
-SRCS = #please complete
+TESTFLAGS = -DTEST_MAIN -DTEST_SHUF -DTEST_INTER -DTEST_DIV -DTEST_COMB -DTEST_RSHUF
 
+SRCS =  main.c utility.c shuffle.c
 OBJS = $(SRCS:%.c=%.o)
-VALGRIND = valgrind --tool=memcheck --verbose --log-file
 
-TESTFALGS = #please complete
+VALGRIND = valgrind --tool=memcheck --verbose --log-file=memcheck.txt --leak-check=full
 
 $(TARGET): $(OBJS)
-	$(CC) $(TESTFALGS) $(OBJS) -o $(TARGET)
-
-testmemory: $(TARGET)
-	$(VALGRIND)=./valgrind.log ./shuf
-
-test1: shuf
-	./shuf 2 2 | sort > output1
-	#perform diff between output1 and expected/expected1
-
-test2: shuf
-	./shuf 4 3 | sort > output2
-	#perform diff between output2 and expected/expected2
-
-test2: shuf
-	./shuf 7 2 | sort > output3
-	#perform diff between output3 and expected/expected3	
+	$(GCC) $(TESTFLAGS) $(OBJS) -o $(TARGET)
 
 .c.o:
-	$(GCC) $(CFLAGS) -c $*.c
+	$(GCC) $(TESTFLAGS) -c $*.c
+
+testall: test1 test2 test3
+
+testadd: $(TARGET)
+	test1
+	test2
+	test3
+	testmemory
+
+testmemory:	$(TARGET)
+	$(VALGRIND) ./shuf 4 | sort > output1.txt
+	$(VALGRIND) ./shuf 8 | sort > output2.txt
+	$(VALGRIND) ./shuf 11 | sort > output3.txt
+
+test1: $(TARGET)
+	./shuf 2 2 | sort > output1.txt
+	diff -i -w output1.txt expected/expected1
+	
+test2: $(TARGET)
+	./shuf 4 3 | sort > output2.txt
+	diff -i -w output2.txt expected/expected2
+
+test3: $(TARGET)
+	./shuf 7 2 | sort > output3.txt
+	diff -i -w output3.txt expected/expected3
 
 clean:
 	rm -f $(OBJS) $(TARGET)
+	rm -f *.txt
