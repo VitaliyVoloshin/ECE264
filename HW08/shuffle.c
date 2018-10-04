@@ -20,7 +20,7 @@ void divide(CardDeck orig_deck, CardDeck * upper_deck, CardDeck * lower_deck)
 }
 #endif
 
-#ifdef TEST_COMB
+#ifdef TEST_INTER
 void combine(CardDeck combined_deck, CardDeck upper_deck, CardDeck lower_deck)
 {
 	// Check that upper deck !empty, if so, empty lower and print

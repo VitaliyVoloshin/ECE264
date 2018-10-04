@@ -5,7 +5,7 @@ WARNING = -Wall -Wshadow --pedantic
 ERROR = -Wvla -Werror
 GCC = gcc -std=c99 -g $(WARNING) $(ERROR)
 
-TESTFLAGS = -DTEST_MAIN -DTEST_SHUF -DTEST_INTER -DTEST_DIV -DTEST_COMB
+TESTFLAGS = -DTEST_MAIN -DTEST_SHUF -DTEST_INTER -DTEST_DIV
 
 SRCS =  main.c utility.c shuffle.c
 OBJS = $(SRCS:%.c=%.o)
