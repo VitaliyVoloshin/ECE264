@@ -1,133 +1,100 @@
 #include "bmpimage.h"
-// Modifyall functions in this file
-/* check whether a header is valid or not
- * assume that header has been read from fptr
- * the position of the indicator of fptr is not certain
- * could be at the beginning of the file, end of the file or
- * anywhere in the file
- * note that the check is only for this exercise/assignment
- * in general, the format is more complicated
- */
+// Modify all functions in this file
+
 
 #ifdef TEST_HEADERVALID
-
-int Is_BMPHeader_Valid(BMPHeader* header, FILE *fptr) {
-  // Make sure this is a BMP file
-        //Check for header->type
-	
-	// check the offset(header->offset)from beginning of file to image data
-	// which is essentially the size of the BMP header
-	// known as BMP_HEADER_SIZE for this exercise/assignment
-
-	// check for DIB header size == DIB_HEADER_SIZE
-	// For this exercise/assignment
-	// use header->DIB_header_size 
-	
-	// Make sure there is only one image plane
-	//use header->planes
-	
-	// Make sure there is no compression
-	
-	// ncolours and importantcolours should be 0
-
-	// Make sure we are getting 24 bits per pixel
-	// or 16 bits per pixel
-	// only for this assignment
-	
-	// check for file size, image size
-	// based on bits, width, and height
-	//check for imagesize using size-offset=imagesize, each element is a part of the header structure, so use -> accordingly
-
-	//use ftell(fptr) for file position(file_pos)
-	//check if input file can be read: if (fseek(fptr, 0, SEEK_END) != 0)
-       
-	//use ftell(fptr) for file file size(file_size)
-	//check (fseek(fptr, file_pos, SEEK_SET) != 0) for input file reading check
-	
-	//check if file_size is not equal to header->size
-	
-	//number of rows= width of file * number of bits +31
-	//multiply total value by 4
-	//check if number of rows*height is the image size
-	
-	return TRUE;
+int Is_BMPHeader_Valid(BMPHeader* header, FILE *fptr) 
+{
+    if((header->type)!=0x4d42) return FALSE;
+    if((header->offset)!=BMP_HEADER_SIZE) return FALSE;
+    if((header->DIB_header_size)!=DIB_HEADER_SIZE) return FALSE;
+    if((header->planes)!=1) return FALSE;
+    if((header->compression)!=FALSE) return FALSE;
+    if((header->ncolours)!=0) return FALSE;
+    if((header->importantcolours)!=0) return FALSE;
+    if((header->bits)!=24) return FALSE;
+    return TRUE;
 }
-
 #endif
 
 
-
 #ifdef TEST_BMPOPENFILE
-/* The input argument is the source file pointer.
- * The function returns an address to a dynamically allocated BMPImage
- * only if the file contains a valid image file
- * Otherwise, return NULL
- * If the function cannot get the necessary memory to store the image,
- * also return NULL
- * Any error messages should be printed to stderr
- */
+BMPImage *BMP_Open(const char *filename) 
+{
+    // Declare the BMPImage pointer and file pointer
+    BMPImage *img = NULL;
+  	FILE *fptr = NULL;
+    
+    // Open and check the file
+    fptr=fopen(filename,"r");
+	if(fptr==NULL) 
+    {  BMP_Free(img);  fclose(fptr);  return NULL;  }
 
-
-BMPImage *BMP_Open(const char *filename) {
-  //open file
-  //read file
-	FILE *fptr = fopen(filename,"r");
+	// Allocate memory for BMPImage*
+	img = (BMPImage *)malloc(sizeof(BMPImage));
 	
-
-	//Allocate memory for BMPImage*;
-
-	BMPImage *bmpImage = (BMPImage *)malloc(sizeof(BMPImage));
-	//check for memory allocation errors
-
+    // Check for memory allocation errors
+    if(img==NULL)
+    {  fprintf(stderr,"malloc fail\n"); BMP_Free(img);  fclose(fptr); return NULL;  }
 	
-	//Read the first 54 bytes of the source into the header
-
-	int read_size = fread(&(bmpImage->header), sizeof(BMPHeader), 1, fptr);
-
-	//Compute data size, width, height, and bytes per pixel;
-	//check for any error while reading
+	// Read the first 54 bytes of the source into the header
+    fseek(fptr,0L,SEEK_SET);
+	if(fread(&(img->header), sizeof(BMPHeader), 1, fptr) != 1) 
+    {  BMP_Free(img);  fclose(fptr);  return NULL;  }
 	
-	//check if the header is valid
-	
-	// Allocate memory for image data
-	//(bmpImage->data = (unsigned char *)malloc(sizeof(unsigned char)*((int)((bmpImage->header).imagesize))))
-	//check error
+	// Check if the header is valid
+	if(Is_BMPHeader_Valid(&(img->header), fptr)==0)
+    {  BMP_Free(img);  fclose(fptr);  return NULL;  }
+ 
+    // Allocate memory for image data
+    img->data=(unsigned char *)malloc(sizeof(unsigned char)*((int)((img->header).imagesize)));
+    if((img->data)==NULL)
+    {  fprintf(stderr,"malloc fail\n"); BMP_Free(img);  fclose(fptr); return NULL;  }
 
-	// read in the image data
+	// Read in the image data
+    fseek(fptr,0L,SEEK_CUR);
+    if(fread(img->data, sizeof(unsigned char), ((int)((img->header).imagesize)), fptr) != ((int)((img->header).imagesize)))
+    {  BMP_Free(img);  fclose(fptr);  return NULL;  }
 
-	//check for error while reading
-	
+    // Check if file still has data (error)
+    unsigned char onebyte;
+    if(fread(&onebyte, sizeof(unsigned char), 1, fptr) != 0)
+    {  BMP_Free(img);  fclose(fptr);  return NULL;  } 
+    
+    // Everything successful, close file
 	fclose(fptr);
-	return bmpImage;
+	return img;
 }
 #endif
 
 
 #ifdef TEST_BMPWRITEFUNC
-/* The input arguments are the destination file , BMPImage *image.
- * The function write the header and image data into the destination file.
- */
 int BMP_Write(const char * outfile, BMPImage* image)
 {
-	FILE *fptr = fopen(outfile, "w");
-	//open file and check for error
+    // Open the outfil and check for error
+    FILE * fptr = NULL;
+    fptr = fopen(outfile, "w");
+    if(fptr==NULL) return 0;
+
+    // Write the image header to the outfile
+    if(fwrite(&(image->header),sizeof(BMPHeader), 1, fptr) != 1)
+    {  fclose(fptr); return 0;  }
 	
-	//check error for writing
-	
-	// write and check for image data:(fwrite(image->data, sizeof(unsigned char), (image->header).imagesize, fptr) != (image->header).imagesize) 
-	
+	// Write the image data to the outfile
+    if(fwrite(image->data,sizeof(unsigned char), (image->header).imagesize, fptr) != (image->header).imagesize)
+    {  fclose(fptr); return 0;  }
+
+    // Everything successful, close file
 	fclose(fptr);
 	return TRUE;
 }
-
 #endif
-/* The input argument is the BMPImage pointer. The function frees memory of
- * the BMPImage.
- */
+
+
 #ifdef TEST_BMPFREEFUNC
-void BMP_Free(BMPImage* image) {
-	//free image if image is true
+void BMP_Free(BMPImage* image) 
+{ 
+    free(image->data);
+    free(image);
 }
-
 #endif
-
