@@ -52,9 +52,11 @@ BMPImage *BMP_Open(const char *filename)
     {  fprintf(stderr,"malloc fail\n"); BMP_Free(img);  fclose(fptr); return NULL;  }
 
 	// Read in the image data
-    fseek(fptr,0L,SEEK_CUR);
-    if(fread(img->data, sizeof(unsigned char), ((int)((img->header).imagesize)), fptr) != ((int)((img->header).imagesize)))
-    {  BMP_Free(img);  fclose(fptr);  return NULL;  }
+    for(int i=0; i<img->header.imagesize; i++)
+    {
+        if(fread(&img->data[i],sizeof(unsigned char), 1, fptr) != 1)
+        {  free(img->data); free(img); return NULL;  }
+    }
 
     // Check if file still has data (error)
     unsigned char onebyte;
@@ -77,12 +79,16 @@ int BMP_Write(const char * outfile, BMPImage* image)
     if(fptr==NULL) return 0;
 
     // Write the image header to the outfile
+    fseek(fptr,0,SEEK_SET);
     if(fwrite(&(image->header),sizeof(BMPHeader), 1, fptr) != 1)
     {  fclose(fptr); return 0;  }
 	
 	// Write the image data to the outfile
-    if(fwrite(image->data,sizeof(unsigned char), (image->header).imagesize, fptr) != (image->header).imagesize)
-    {  fclose(fptr); return 0;  }
+    for(int i=0;i<image->header.imagesize; i++)
+    {
+        if(fwrite(&image->data[i],sizeof(unsigned char), 1, fptr) != 1)
+        {  fclose(fptr); return FALSE;  }
+    }
 
     // Everything successful, close file
 	fclose(fptr);

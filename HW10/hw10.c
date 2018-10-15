@@ -13,10 +13,9 @@ int main(int argc, char **argv)
     // Call ImgToGray()
     BMPImage * gray_image = ImgToGray(img);
     if(gray_image==NULL) 
-    {  BMP_Free(img); BMP_Free(gray_image); return EXIT_FAILURE;  }
-    gray_image = ImgToGray(img);
+    {  BMP_Free(img); BMP_Free(gray_image); return EXIT_FAILURE;  } 
     
-    // Call BMP_Write() to write the greyscale image to file
+    // Call BMP_Write() to write image to file
     if(BMP_Write(argv[2],gray_image)!=TRUE)
     {  BMP_Free(img); BMP_Free(gray_image); return EXIT_FAILURE;  }
     

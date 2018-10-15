@@ -31,15 +31,27 @@ testmemory:	$(TARGET)
 
 test1: $(TARGET)
 	./hw10 exampleImages/RV.bmp expectedImages/outputRV.bmp
+	xxd expectedImages/expectedRV.bmp > expectedImages/expRV.txt
+	xxd expectedImages/outputRV.bmp > expectedImages/outRV.txt
+	diff expectedImages/expRV.txt expectedImages/outRV.txt
 	
 test2: $(TARGET)
 	./hw10 exampleImages/RV2.bmp expectedImages/outputRV2.bmp
+	xxd expectedImages/expectedRV2.bmp > expectedImages/expRV2.txt
+	xxd expectedImages/outputRV2.bmp > expectedImages/outRV2.txt
+	diff expectedImages/expRV2.txt expectedImages/outRV2.txt
 
 test3: $(TARGET)
 	./hw10 exampleImages/RV2Small.bmp expectedImages/outputRV2Small.bmp
+	xxd expectedImages/expectedRV2Small.bmp > expectedImages/expRV2Small.txt
+	xxd expectedImages/outputRV2Small.bmp > expectedImages/outRV2Small.txt
+	diff expectedImages/expRV2Small.txt expectedImages/outRV2Small.txt
 
 test4: $(TARGET)
 	./hw10 exampleImages/CondProb.bmp expectedImages/outputCondProb.bmp
+	xxd expectedImages/expectedCondProb.bmp > expectedImages/expCondProb.txt
+	xxd expectedImages/outputCondProb.bmp > expectedImages/outCondProb.txt
+	diff expectedImages/expCondProb.txt expectedImages/outCondProb.txt
 
 clean:
 	rm -f $(OBJS) $(TARGET)

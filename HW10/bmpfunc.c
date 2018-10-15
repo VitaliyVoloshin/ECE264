@@ -27,15 +27,15 @@ BMPImage * ImgToGray(BMPImage * image)
     gray_image->header = image->header;
 	
 	// Assign the the imagesize as height * width
-	(gray_image->header).imagesize = width*height;
+	(gray_image->header).imagesize = width*height*3; 
 	
 	// Check for data allocation fail
-	if((gray_image->data = (unsigned char *)malloc(sizeof(unsigned char)*((int)(height*width)))) == NULL)
+	if((gray_image->data = (unsigned char *)malloc(sizeof(unsigned char)*(gray_image->header).imagesize)) == NULL)
     {  BMP_Free(gray_image);  }
 	
 	// Run loop for all pixels using height and width
 	int pixel=0;
-    for(pixel=0; pixel<(height*width); pixel+=3)
+    for(pixel=0; pixel<(gray_image->header).imagesize; pixel+=3)
     {
         // Convert each pixel of all channels to gray using RGB2GRAY function
         unsigned char gray_val = RGB2Gray(image->data[pixel+(uint8_t)2],
