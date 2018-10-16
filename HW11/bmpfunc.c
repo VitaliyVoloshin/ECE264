@@ -53,18 +53,66 @@ BMPImage * ImgToGray(BMPImage * image)
 #endif
 
 #ifdef TEST_ADAPTIVETHRESHOLDING
-BMPImage * AdaptiveThresholding(BMPImage * grayImage, int radius, int epsilon){
- 	// allocate space for the image
-	// the image has the same size(height and width)
-	// therefore the header has to stay the same
+BMPImage * AdaptiveThresholding(BMPImage * grayImage, int radius, int epsilon)
+{
+    // Grab width and height from image header
+    int width = (grayImage->header).width;
+	int height = (grayImage->header).height;
 
-	adaptive->header = grayImage->header;
-	// (gray_image->header).imagesize = (gray_image->header).width*(gray_image->header).height;
-	if ((adaptive->data = malloc(sizeof(unsigned char)*(adaptive->header).imagesize)) == NULL) {
-		fprintf(stderr, "Error allocating memory\n");
-		free(adaptive);
-		return NULL;
-	}
+	// Allocate memory for the a-thresh'ed image
+    BMPImage * adaptive = NULL;
+    adaptive = (BMPImage *)malloc(sizeof(BMPImage));
+    if(adaptive == NULL) return NULL;
+
+    // Images have same headers
+    adaptive->header = grayImage->header;
+	
+	// Assign the the imagesize as height * width
+	(adaptive->header).imagesize = width*height*3;
+	
+	// Check for data allocation fail
+	if((adaptive->data = (unsigned char *)malloc(sizeof(unsigned char)*(adaptive->header).imagesize)) == NULL)
+    {  BMP_Free(adaptive); return NULL;  }
+	
+	// Run loop for all pixels using height and width
+	int pixel=0;
+    int counter=0;
+    int allData=0;
+    int loc=0;
+    for(pixel=0; pixel<(grayImage->header).imagesize; pixel+=3)
+    {
+        // Find the maximum of top row, bottom row, left column and right column
+        int toprow = MAX(0, row-radius);
+     	int bottomrow = MIN(height-1, row+radius);
+     	int leftcol = MAX(0, col-radius);
+     	int rightcol = MIN(width-1, col+radius);
+        
+        // Run loop from toprow to bottom row
+        for(int row=toprow; row<=bottomrow; row++)
+        {
+            // Run loop from leftcol to rightcol
+            for(int col=leftcol; col<=rightcol; col++)
+            {
+                counter++;
+                loc=(row*width+col)*3;
+                allData+= grayImage->data[loc];
+            }
+        }
+
+        // Calculate the average of radius
+
+
+
+
+        counter=0;
+        allData=0;
+
+        adaptive->data[pixel+(uint8_t)2] = adap_val;
+        adaptive->data[pixel+(uint8_t)1] = adap_val;
+        adaptive->data[pixel] = adap_val;
+    }
+
+
 
 	int pixel=0;
 	//Run a nested loop for all elements using height and width
