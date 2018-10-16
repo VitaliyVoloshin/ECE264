@@ -79,8 +79,14 @@ BMPImage * AdaptiveThresholding(BMPImage * grayImage, int radius, int epsilon)
     int counter=0;
     int allData=0;
     int loc=0;
-    for(pixel=0; pixel<(grayImage->header).imagesize; pixel+=3)
-    {
+    int adap_val=0;
+    int row=0;
+    int col=0;
+    int h;
+    int w;
+    //for(pixel=0; pixel<(grayImage->header).imagesize; pixel+=3)
+    //{
+    //for()
         // Find the maximum of top row, bottom row, left column and right column
         int toprow = MAX(0, row-radius);
      	int bottomrow = MIN(height-1, row+radius);
@@ -88,10 +94,10 @@ BMPImage * AdaptiveThresholding(BMPImage * grayImage, int radius, int epsilon)
      	int rightcol = MIN(width-1, col+radius);
         
         // Run loop from toprow to bottom row
-        for(int row=toprow; row<=bottomrow; row++)
+        for(row=toprow; row<=bottomrow; row++)
         {
             // Run loop from leftcol to rightcol
-            for(int col=leftcol; col<=rightcol; col++)
+            for(col=leftcol; col<=rightcol; col++)
             {
                 counter++;
                 loc=(row*width+col)*3;
@@ -100,39 +106,30 @@ BMPImage * AdaptiveThresholding(BMPImage * grayImage, int radius, int epsilon)
         }
 
         // Calculate the average of radius
+        adap_val=(int)allData/counter;
 
+        // Check if average minus epsilon > grayImage->data[pixel]
+        if((adap_val-epsilon)>grayImage->data[pixel])
+        {
+            // Change pixel to black
+            adaptive->data[pixel+(uint8_t)2] = 0;
+            adaptive->data[pixel+(uint8_t)1] = 0;
+            adaptive->data[pixel] = 0;
+        }
+        else
+        {
+            // Change pixel to white
+            adaptive->data[pixel+(uint8_t)2] = 255;
+            adaptive->data[pixel+(uint8_t)1] = 255;
+            adaptive->data[pixel] = 255;
+        }
 
-
-
+        // Reset variables
         counter=0;
         allData=0;
-
-        adaptive->data[pixel+(uint8_t)2] = adap_val;
-        adaptive->data[pixel+(uint8_t)1] = adap_val;
-        adaptive->data[pixel] = adap_val;
     }
 
-
-
-	int pixel=0;
-	//Run a nested loop for all elements using height and width
-        //Find the maximum of top row, bottom rpw, left column and right column using radius
-	/*int toprow = MAX(0, row-radius);
-     	 int bottomrow = MIN(height-1, row+radius);
-     	 int leftcol = MAX(0, col-radius);
-     	 int rightcol = MIN(width-1, col+radius);*/
-    	//Calculate the avergage of all pixels
-	//Run loop from toprow to bottom row
-	//Inside which run a loop from left column to right column
-		//calculate the location of each pixel using (row2*width + col2)*3;
-         	//add all data values at every location point in data
-		//keep a counter for averaging
-	//Outside the second nested loop: 
-	//calculate averge (using int)
-	//check if average-epsilon is greater than grayImage->data[at that pixel point]
-	//then assign adaptive thresholding image data as 0(black) for data value at pixel, pixel+1, pixel+2
-     
-        // else if average is lower then color shall be white(255) for data value at pixel, pixel+1, pixel+
-//return the image after adaptive thresholding
+    // Return image after thresholding
+    return adaptive;
 }
 #endif

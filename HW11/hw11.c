@@ -20,15 +20,19 @@ int main(int argc, char **argv)
     if(gray_image==NULL) 
     {  BMP_Free(img); BMP_Free(gray_image); return EXIT_FAILURE;  } 
     
-    // Call adaptive threshold function
+    // Call AdaptiveThesholding()
+    BMPImage * adaptive = AdaptiveThresholding(gray_image,radius,epsilon);
+    if(adaptive==NULL) 
+    {  BMP_Free(img); BMP_Free(gray_image); BMP_Free(adaptive); return EXIT_FAILURE;  } 
 
     // Call BMP_Write() to write image to file
-    if(BMP_Write(argv[2],gray_image)!=TRUE)
-    {  BMP_Free(img); BMP_Free(gray_image); return EXIT_FAILURE;  }
+    if(BMP_Write(argv[2],adaptive)!=TRUE)
+    {  BMP_Free(img); BMP_Free(gray_image); BMP_Free(adaptive); return EXIT_FAILURE;  }  
     
     // Free all images and return successfull
     BMP_Free(img);
     BMP_Free(gray_image);
+    BMP_Free(adaptive);
 	return EXIT_SUCCESS;
 }
 #endif
