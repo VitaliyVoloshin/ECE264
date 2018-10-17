@@ -74,59 +74,70 @@ BMPImage * AdaptiveThresholding(BMPImage * grayImage, int radius, int epsilon)
 	if((adaptive->data = (unsigned char *)malloc(sizeof(unsigned char)*(adaptive->header).imagesize)) == NULL)
     {  BMP_Free(adaptive); return NULL;  }
 	
-	// Run loop for all pixels using height and width
-	int pixel=0;
+	// Run loop for all pixels using height and width	
     int counter=0;
     int allData=0;
     int loc=0;
+    int loc2=0;
     int adap_val=0;
     int row=0;
     int col=0;
-    int h;
-    int w;
-    //for(pixel=0; pixel<(grayImage->header).imagesize; pixel+=3)
-    //{
-    //for()
-        // Find the maximum of top row, bottom row, left column and right column
-        int toprow = MAX(0, row-radius);
-     	int bottomrow = MIN(height-1, row+radius);
-     	int leftcol = MAX(0, col-radius);
-     	int rightcol = MIN(width-1, col+radius);
+    int row2=0;
+    int col2=0;
+    int toprow=0;
+    int bottomrow=0;
+    int leftcol=0;
+    int rightcol=0;
+
+    // Iterate through pixels using height and width
+    for(row=0; row<height; row++)
+    {
+        for(col=0; col<width; col++)
+        {
+            // Find the maximum of top row, bottom row, left column and right column
+            toprow = MAX(0, row-radius);
+     	    bottomrow = MIN(height-1, row+radius);
+     	    leftcol = MAX(0, col-radius);
+     	    rightcol = MIN(width-1, col+radius);
         
-        // Run loop from toprow to bottom row
-        for(row=toprow; row<=bottomrow; row++)
-        {
-            // Run loop from leftcol to rightcol
-            for(col=leftcol; col<=rightcol; col++)
+            // Run loop from toprow to bottom row
+            for(row2=toprow; row2<=bottomrow; row2++)
             {
-                counter++;
-                loc=(row*width+col)*3;
-                allData+= grayImage->data[loc];
+                // Run loop from leftcol to rightcol
+                for(col2=leftcol; col2<=rightcol; col2++)
+                {
+                    counter++;
+                    loc=(row2*width+col2)*3;
+                    allData+= grayImage->data[loc];
+                }
             }
-        }
 
-        // Calculate the average of radius
-        adap_val=(int)allData/counter;
+            // Calculate the pixel location for indexing data
+            loc2=(row*width+col)*3;
+            
+            // Calculate the average of radius
+            adap_val=(int)allData/counter;
 
-        // Check if average minus epsilon > grayImage->data[pixel]
-        if((adap_val-epsilon)>grayImage->data[pixel])
-        {
-            // Change pixel to black
-            adaptive->data[pixel+(uint8_t)2] = 0;
-            adaptive->data[pixel+(uint8_t)1] = 0;
-            adaptive->data[pixel] = 0;
-        }
-        else
-        {
-            // Change pixel to white
-            adaptive->data[pixel+(uint8_t)2] = 255;
-            adaptive->data[pixel+(uint8_t)1] = 255;
-            adaptive->data[pixel] = 255;
-        }
+            // Check if average minus epsilon > grayImage->data[pixel]
+            if((adap_val-epsilon)>grayImage->data[loc2])
+            {
+                // Change pixel to black
+                adaptive->data[loc2+(uint8_t)2] = 0;
+                adaptive->data[loc2+(uint8_t)1] = 0;
+                adaptive->data[loc2] = 0;
+            }
+            else
+            {
+                // Change pixel to white
+                adaptive->data[loc2+(uint8_t)2] = 255;
+                adaptive->data[loc2+(uint8_t)1] = 255;
+                adaptive->data[loc2] = 255;
+            }
 
-        // Reset variables
-        counter=0;
-        allData=0;
+            // Reset variables
+            counter=0;
+            allData=0;
+        }
     }
 
     // Return image after thresholding

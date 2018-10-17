@@ -27,7 +27,7 @@ testadd: $(TARGET)
 	testmemory
 
 testmemory:	$(TARGET)
-	$(VALGRIND) ./hw11 exampleImages/RV2.bmp expectedImages/outputRV2.bmp
+	$(VALGRIND) ./hw11 exampleImages/RV2.bmp expectedImages/outputRV2.bmp 3 2
 
 test1: $(TARGET)
 	./hw11 exampleImages/RV.bmp expectedImages/outputRV.bmp 5 2
@@ -42,13 +42,13 @@ test2: $(TARGET)
 	diff expectedImages/expRV2.txt expectedImages/outRV2.txt
 
 test3: $(TARGET)
-	./hw11 exampleImages/RV2Small.bmp expectedImages/outputRV2Small.bmp 1 2
+	./hw11 exampleImages/RV2Small.bmp expectedImages/outputRV2Small.bmp 11 2
 	xxd expectedImages/expectedRV2Small.bmp > expectedImages/expRV2Small.txt
 	xxd expectedImages/outputRV2Small.bmp > expectedImages/outRV2Small.txt
 	diff expectedImages/expRV2Small.txt expectedImages/outRV2Small.txt
 
 test4: $(TARGET)
-	./hw11 exampleImages/CondProb.bmp expectedImages/outputCondProb.bmp 11 2
+	./hw11 exampleImages/CondProb.bmp expectedImages/outputCondProb.bmp 1 2
 	xxd expectedImages/expectedCondProb.bmp > expectedImages/expCondProb.txt
 	xxd expectedImages/outputCondProb.bmp > expectedImages/outCondProb.txt
 	diff expectedImages/expCondProb.txt expectedImages/outCondProb.txt
