@@ -48,7 +48,7 @@ test4: $(TARGET)
 	diff testing/expected4.txt testing/output4.txt 
 
 test5: $(TARGET)
-	./hw12 43 3 1 > testing/output5.txt
+	./hw12 41 3 1 > testing/output5.txt
 	diff testing/expected5.txt testing/output5.txt 
 
 test6: $(TARGET)

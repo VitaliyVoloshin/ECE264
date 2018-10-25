@@ -20,16 +20,17 @@ int main(int argc, char **argv)
     int elemDivisible = (int)strtol(argv[3],NULL,10);
 
 	// Create head node
-    Node * head = CreateNode(NULL);
+    Node * head = NULL;
+    head = CreateNode(length-1);
 
 	// Create Linked list of length length
-    LinkedListCreate(head, length);
-
+    LinkedListCreate(&head, length-2);
+    
 	// Run josephus
-    Josephus(head, k, elemDivisible);
+    Josephus(&head, k, elemDivisible);
 
 	// Free the head node
-    free(head)
+    free(head);
 
 	return EXIT_SUCCESS;
 }
