@@ -142,7 +142,8 @@ void Divide(Node ** source)
     Node * s2_h = NULL;
 
 	// Check for the base case -- length 0 or 1
-    if((CountNodes(h)==1) || (CountNodes(h)==0)) return;
+    if((CountNodes(h)==1) || (CountNodes(h)==0)) 
+    {  free(h); return;  }
 	  
 	// Use SpiltList(...) to partition the list into sub lists
     SplitList(h,&s1_h,&s2_h);
@@ -153,6 +154,6 @@ void Divide(Node ** source)
 
     // Recursively divide both sub-lists to find their respective mid-points
     Divide(&s1_h);
-    Divide(&s2_h);
+    Divide(&s2_h); 
 }
 #endif

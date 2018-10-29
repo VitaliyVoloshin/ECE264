@@ -29,6 +29,7 @@ void fillArray(int * arr, int count, char * file_name)
     }
     fclose(fptr);
 }
+
 void DeleteList(Node ** head)
 {
     Node * current = *head;
@@ -74,7 +75,6 @@ int main(int argc, char **argv)
 
     // Cleanup
     free(arr);
-    DeleteList(&head);
     fclose(finput);
 	return EXIT_SUCCESS;
 }
