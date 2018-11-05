@@ -20,6 +20,7 @@ int main(int argc, char **argv)
 	// Remove all duplicates in the linked list created above
     RemoveDuplicate(head);
 
+    //LinkedListPrint(head);
 	// Release memory
     free(head);
     return EXIT_SUCCESS;

@@ -21,6 +21,24 @@ void LinkedListPrint(Node * head)
 
 /********** Do Not modify the file above this line, you can modify below ******/
 #ifdef TEST_CREATENODE
+void LinkedListReverse(Node ** head)
+{
+    Node * prev = NULL;
+    Node * current = *head;
+    Node * next = NULL;
+    while(current != NULL)
+    {
+        // Copy the next node
+        next = current->next;
+        // Reverse the current node's pointer
+        current->next = prev;
+        // Move pointers by 1 position
+        prev = current;
+        current = next;
+    }
+    *head = prev;
+}
+
 Node * CreateNode(int val)
 {
     // Allocate mem for the new Node + check for mem fail
@@ -57,24 +75,36 @@ void LinkedListInsert(Node ** head, int v)
 
 void LinkedListCreate(Node ** head, char* name)
 {
+    // Variable declaration
+    int ind=0;
+    int tmp;
+
     // We are given a string corresponding to a file with input data
     // Lets open it
     FILE * finput = fopen(name,"r");
 
     // Check fail...
-    if(finput==NULL) return EXIT_FAILURE;
+    if(finput==NULL) return;
 
     // Lets get a count of items in this file
     int count = countFromFile(name);
 
-    // 
-
+    // Lets create the LL by inserting each of these values one at a time
+    while(ind<count)
+    {
+        if(fscanf(finput,"%d",&tmp) != 1) fclose(finput);
+        LinkedListInsert(head,tmp);
+        ind++;
+    }
+    LinkedListReverse(head);
 }
 #endif
 
 #ifdef TEST_REMOVED
-void DeleteNode(Node ** head, int v)
+void DeleteNode(Node ** head, int ind)
 {
+    int idx=0;
+
     // If nothing in list, do nothing
     if(*head==NULL) return;
 
@@ -82,7 +112,7 @@ void DeleteNode(Node ** head, int v)
     Node * temp = *head;
 
     // If the node we are looking for is at the very first node
-    if((temp->value) == v)
+    if(ind == 0)
     {
         // Update the head and free temp node
         *head = temp->next;
@@ -91,8 +121,8 @@ void DeleteNode(Node ** head, int v)
     }
 
     // Traverse! Break when reach node right before target
-    while(((temp->next) != NULL) && (((temp->next)->value) != v))
-    {  temp = temp->next;  }
+    while(((temp->next) != NULL) && (idx < ind))
+    {  temp = temp->next; idx++;  }
 
     // Check if we over-traversed...
     if((temp->next) == NULL) return;
@@ -106,19 +136,44 @@ void DeleteNode(Node ** head, int v)
     // Append the rest of the list using pointer to the next of deleted
     temp->next = newNext;
 }
-
-// This function will remove repetitions of a linked list value
-void RemoveDuplicate(Node *headRef)
+int LinkedListExists(Node * head, int val)
 {
-	/*
-	This function will remove repetitions from the linked list referenced by headRef.
-	Each time we check for a new Node in the linked list, we will check if it is distinct from
-	the Nodes already present in the list ( upto the previous Node).
-	So for each occurrence after its first, we will be deleting that node.
-	To delete a node: we will map the next Node of the previous Node to the Node after the current Node.
-	*/
+    Node * temp = head;
+    while(temp != NULL)
+    {
+        if(temp->value == val) return 1;
+        temp=temp->next;
+    }
+    return 0;
+}
+// This function will remove repetitions of a linked list value
+void RemoveDuplicate(Node * headRef)
+{
+    // Declare some pointers
+    Node * prevSeenHead = NULL;
+    Node * tempHead = headRef;
+    int ind = 0;
+
+    while(tempHead != NULL)
+    {
+        if(LinkedListExists(prevSeenHead,tempHead->value))
+        {  
+            /* REMOVE THIS NODE */
+            DeleteNode(&tempHead,ind);
+            LinkedListPrint(tempHead);
+            printf("\n");
+            //tempHead = tempHead->next;
+            ind++;
+        }
+        else
+        {  
+            LinkedListInsert(&prevSeenHead, tempHead->value);
+            ind++;
+            tempHead = tempHead->next;
+        }   
+    }
 
     // Print the linked list after all repetitions have been removed
-    LinkedListPrint(headRef);
+    LinkedListPrint(tempHead);
 }
 #endif
