@@ -9,8 +9,6 @@ typedef struct listnode
 	int value;
 } Node;
 
-
-
 Node * CreateNode(int val);
 void LinkedListCreate(Node ** head, char* name);
 void LinkedListPrint(Node * head);
