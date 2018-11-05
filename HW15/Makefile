@@ -16,11 +16,13 @@ $(TARGET): $(OBJS)
 .c.o:
 	$(GCC) $(TESTFLAGS) -c $*.c
 
-testall: test1 test2 testmemory
+testall: test1 test2 test3 test4 testmemory
 
 testadd: $(TARGET)
 	test1
 	test2
+	test3
+	test4
 	testmemory
 
 testmemory:	$(TARGET)
@@ -33,6 +35,14 @@ test1: $(TARGET)
 test2: $(TARGET)
 	./hw15 inputs/test2.txt > outputs/output2.txt
 	diff expected/expected2.txt outputs/output2.txt 
+
+test3: $(TARGET)
+	./hw15 inputs/test3.txt > outputs/output3.txt
+	diff expected/expected3.txt outputs/output3.txt
+
+test4: $(TARGET)
+	./hw15 inputs/test4.txt > outputs/output4.txt
+	diff expected/expected4.txt outputs/output4.txt 
 
 clean:
 	rm -f $(OBJS) $(TARGET)

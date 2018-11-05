@@ -21,6 +21,7 @@ void LinkedListPrint(Node * head)
 
 /********** Do Not modify the file above this line, you can modify below ******/
 #ifdef TEST_CREATENODE
+// Reverse a linked list, returning nothing
 void LinkedListReverse(Node ** head)
 {
     Node * prev = NULL;
@@ -39,6 +40,7 @@ void LinkedListReverse(Node ** head)
     *head = prev;
 }
 
+// Create, init, and return a new Node with value val
 Node * CreateNode(int val)
 {
     // Allocate mem for the new Node + check for mem fail
@@ -56,6 +58,7 @@ Node * CreateNode(int val)
 #endif
 
 #ifdef TEST_LINKEDLISTCREATE
+// Count the number of integers in a given file
 int countFromFile(char * file_name)
 {
     FILE * fptr = fopen(file_name, "r");
@@ -66,6 +69,7 @@ int countFromFile(char * file_name)
     return count;
 }
 
+// Insert value v at the beginning of the LL
 void LinkedListInsert(Node ** head, int v)
 {
     Node * newNode = CreateNode(v);
@@ -73,6 +77,7 @@ void LinkedListInsert(Node ** head, int v)
     *head = newNode;
 }
 
+// Create a linked list with values given in file located at path "name"
 void LinkedListCreate(Node ** head, char* name)
 {
     // Variable declaration
@@ -96,39 +101,40 @@ void LinkedListCreate(Node ** head, char* name)
         LinkedListInsert(head,tmp);
         ind++;
     }
+
+    // Flip the LL around
     LinkedListReverse(head);
+    fclose(finput);
 }
 #endif
 
 #ifdef TEST_REMOVED
-void DeleteNode(Node ** head, int ind)
+void DeleteNextNode(Node ** head, int val)
 {
-    int idx=0;
-
     // If nothing in list, do nothing
     if(*head==NULL) return;
 
     // Store the head
     Node * temp = *head;
+    Node * newNext = NULL;
 
     // If the node we are looking for is at the very first node
-    if(ind == 0)
+    if(temp->value == val)
     {
-        // Update the head and free temp node
         *head = temp->next;
         free(temp);
         return;
     }
 
     // Traverse! Break when reach node right before target
-    while(((temp->next) != NULL) && (idx < ind))
-    {  temp = temp->next; idx++;  }
-
+    while(((temp->next) != NULL) && (temp->next->value != val))
+    {  temp = temp->next;  }
+     
     // Check if we over-traversed...
-    if((temp->next) == NULL) return;
+    if((temp->next) == NULL) return; 
 
     // Save the pointer to the next of the node to be deleted
-    Node * newNext = temp->next->next;
+    newNext = temp->next->next;
 
     // Unlink the node from the LL
     free(temp->next);
@@ -136,6 +142,8 @@ void DeleteNode(Node ** head, int ind)
     // Append the rest of the list using pointer to the next of deleted
     temp->next = newNext;
 }
+
+// This function returns 1 if a value exists in any LL, returns 0 else
 int LinkedListExists(Node * head, int val)
 {
     Node * temp = head;
@@ -146,34 +154,62 @@ int LinkedListExists(Node * head, int val)
     }
     return 0;
 }
+
+// This function will delete the entire linked list and free memory
+void LinkedListDestroy(Node ** head)
+{
+    Node * current = *head;
+    while(current!=NULL)
+    {
+        *head = current->next;
+        free(current);
+        current=*head;
+    }
+}
 // This function will remove repetitions of a linked list value
 void RemoveDuplicate(Node * headRef)
 {
     // Declare some pointers
     Node * prevSeenHead = NULL;
     Node * tempHead = headRef;
-    int ind = 0;
+    Node * buildingHead = NULL;
 
-    while(tempHead != NULL)
+    while(tempHead->next != NULL)
     {
         if(LinkedListExists(prevSeenHead,tempHead->value))
         {  
-            /* REMOVE THIS NODE */
-            DeleteNode(&tempHead,ind);
-            LinkedListPrint(tempHead);
-            printf("\n");
-            //tempHead = tempHead->next;
-            ind++;
+            /* DONT INSERT THIS NODE */
+            // Increment the original list
+            tempHead = tempHead->next;
         }
         else
         {  
+            // Append the previously seen list
             LinkedListInsert(&prevSeenHead, tempHead->value);
-            ind++;
+            // Append the originals list
+            LinkedListInsert(&buildingHead, tempHead->value);
+            // Increment the original list
             tempHead = tempHead->next;
-        }   
+        }
     }
 
+    // Take care of that last node...
+    if(!LinkedListExists(prevSeenHead,tempHead->value)) 
+    {  LinkedListInsert(&buildingHead, tempHead->value);  }
+
+    // Reverse the list
+    LinkedListReverse(&buildingHead);
+
+    // Set the head  == the temp LL
+    headRef = buildingHead;
+    
     // Print the linked list after all repetitions have been removed
-    LinkedListPrint(tempHead);
+    LinkedListPrint(headRef);
+
+    // Free the helper linked lists
+    LinkedListDestroy(&buildingHead);
+    LinkedListDestroy(&prevSeenHead);
+    free(prevSeenHead);
+    free(buildingHead);
 }
 #endif
