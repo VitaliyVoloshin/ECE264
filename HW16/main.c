@@ -1,4 +1,4 @@
-/****************** Modify this file at specified place *************************/
+/****************** Modify this file at specified place ***********************/
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -6,7 +6,7 @@
 
 
 #ifdef PRINT_FUN
-// print function  for tn1 contained in tn2
+// Print function for tn1 contained in tn2
 void PrintTn1ContainedTn2 (bool tn1_contained_tn2, bool tn2_contained_tn1)
 {
 	if (tn1_contained_tn2)
@@ -24,36 +24,29 @@ void PrintTn1ContainedTn2 (bool tn1_contained_tn2, bool tn2_contained_tn1)
 	else
 		printf("tree1 and tree2 are not mutually contained.\n");
 }
-
-
 #endif
 
 
-
-/****************** DO NOT Modify this file above this line *************************/
-
-// Modify the following function
-
-
+/****************** DO NOT Modify this file above this line *******************/
 #ifdef TEST_MAIN
-// This is the main function for this assignment. You should follow the instructions
-// for printing carefully. Do not mix the order, otherwise your results will not match
 int main(int argc, char **argv)
 {
-	// if arguments are less than 3 you should not proceed further.
-	// The program should then create 2 binary trees from input arguments
-	// Please check the functions given to you in README file for creating binary tree
-	// After this you will begin checking the relationship between the two trees
-	// 1. First check if `tn1` is contained in `tn2`.
-	// 2. Second you should check if tree2 is contained in tree1,
-	// 3. Pass the results to the print function given to your
-	// remember to free all the memory.
+    // Check input arguments
+    if(argc != 3) return EXIT_FAILURE;
 
+    // Create 2 binary trees from input args
+    treeNode * tn1 = BinaryTreeCreate(argv[1]);
+    treeNode * tn2 = BinaryTreeCreate(argv[2]);
 
+    // Check relationship between the two trees
+    //  1. Check if tn1 is contained in tn2
+    //  2. Check is tn2 is contained in tn1
+    //  3. Pass the results to the print function given
+    PrintTn1ContainedTn2(isContained(tn2,tn1), isContained(tn1,tn2));
 
-
-
+    // Free all memory and return success
+    FreeBinaryTree(tn1);
+    FreeBinaryTree(tn2);
 	return EXIT_SUCCESS;
 }
-
 #endif

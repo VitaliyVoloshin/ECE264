@@ -15,8 +15,7 @@ void BinaryTreePrint(treeNode* tn)
 // print the tree in pre order fashion
 void BinaryTreePreOrderPrint(treeNode* tn)
 {
-	if(tn == NULL)
-		return;
+	if(tn == NULL) return;
 	printf("%d ",tn->value );
 	BinaryTreePreOrderPrint(tn->leftChild);
 	BinaryTreePreOrderPrint(tn->rightChild);
@@ -25,8 +24,7 @@ void BinaryTreePreOrderPrint(treeNode* tn)
 // print the tree in in order fashion
 void BinaryTreeInOrderPrint(treeNode* tn)
 {
-	if(tn == NULL)
-		return;
+	if(tn == NULL) return;
 	BinaryTreeInOrderPrint(tn->leftChild);
 	printf("%d ",tn->value );
 	BinaryTreeInOrderPrint(tn->rightChild);
@@ -35,8 +33,7 @@ void BinaryTreeInOrderPrint(treeNode* tn)
 // print the tree in post order fashion
 void BinaryTreePostOrderPrint(treeNode *tn)
 {
-	if(tn == NULL)
-		return;
+	if(tn == NULL) return;
 	BinaryTreePostOrderPrint(tn->leftChild);
 	BinaryTreePostOrderPrint(tn->rightChild);
 	printf("%d ",tn->value );
