@@ -1,0 +1,77 @@
+//=============================================================================
+//== FILENAME:          "notebook"
+//== WRITTEN BY:        Andrew St. Pierre
+//== LAST MODIFIED:     13/11/2018 13:41:33
+//=============================================================================
+
+//===========================
+//== Clustering Data
+//===========================
+
+    Recall k-means clustering...
+        1. how to choose k
+        2. outliers
+        3. how to start
+        4. long time to converge
+        5. sensitive to points at boundary
+        6. points in different groups may be 
+           closer than points in the same group
+        
+        ... many weaknesses
+
+    Alternative method for clustering data: 
+    ======================
+    Hierarchial Clustering
+    ======================
+        suppose some data: 
+            .   .    ..         ..  .
+            ..   ...        . ...   .
+        
+        pairwise distance:
+            -> find the smallest -> siblings of a
+                binary tree
+        create a distance table:
+            A   B   C   D   E   F   G
+        A | O   x
+        B | x   O
+        C |         O
+        D |             O
+        E |                 O
+        F |                     O
+        G |                         O
+          x = distance(A->B) <=IS SAME=> distance(B->A)
+            = (x_1-y_1)^2 + (x_2-y_2)^2 + ... + (x_n-y_n)^2
+
+        O- node     ---->               /----\
+       / \                             /      \
+      A   B                           / \    / \
+                                     /   \  G   \
+                                    /     \      H
+                                   / \     \
+                                  /   \     \
+                                 /\    \   / \
+                                /  \   |  /\  \
+                               A    B  C  D E  F
+
+         => If data is very scattered, tree will be very tall
+            b/c there is few clusters
+         
+         => Only leaf nodes contain data
+            Non-leaf nodes have no data 'Null'
+         
+         => Even the slightest change in distance will change 
+            horizontal distance... too sensitive
+            Only vertical distance is an accurate indicator of
+            relations
+
+
+
+
+
+
+
+
+
+
+
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
