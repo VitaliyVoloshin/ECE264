@@ -2227,3 +2227,13 @@ root = TreeInsert(root,17);
 
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Number of trees: 1
+Number of trees: 2
+Number of trees: 5
+Number of trees: 14
+Number of trees: 42
+Number of trees: 132
+Number of trees: 429
+Number of trees: 1430
+Number of trees: 4862
+Number of trees: 16796
