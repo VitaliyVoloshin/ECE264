@@ -51,26 +51,65 @@ void PrintAnswer(ListNode* head, ListNode* min1, ListNode* min2)
 #ifdef TEST_MIN
 void FindMin(ListNode* head)
 {
-	// find pair of ListNodes with least distance between them.
-	// call print Function
-
-	/*
-	ENSURE the 2nd parameter of the print function (min1) is smaller than
-	the 3rd parameter (min2).
-	Look at README, and expected output for more details.
-	*/
-
+	// Find pair of ListNodes with least distance between them
+    int minDis = 0;
+    int tmpDis = 0;
+    int i = 0;
+    ListNode * tmp1 = head;
+    ListNode * tmp2 = NULL;
+    ListNode * minNode1 = NULL;
+    ListNode * minNode2 = NULL;
+	while(tmp1->next != NULL)
+    {
+        tmp2 = tmp1->next;
+        if(tmp2->next == NULL)
+        {
+            tmpDis = FindDist(tmp1->treenode,tmp2->treenode);
+            if(tmpDis < minDis)
+            {  
+                minNode1 = tmp1;
+                minNode2 = tmp2;
+                minDis = tmpDis;
+            }
+            break;
+        }
+        while(tmp2->next != NULL)
+        {
+            tmpDis = FindDist(tmp1->treenode,tmp2->treenode);
+            if(tmpDis < minDis)
+            {  
+                minNode1 = tmp1;
+                minNode2 = tmp2;
+                minDis = tmpDis;
+            }
+            tmp2=tmp2->next;
+        }
+        tmp1 = tmp1->next;
+    }
+    
+	// Call print function
+    tmp1 = minNode1;
+    tmp2 = minNode2;
+    while(i<head->treenode->dimension)
+    {
+        if(minNode1->treenode->data[i] < minNode2->treenode->data[i])
+        {  PrintAnswer(head, minNode2, minNode1); return;  }
+        else if(minNode1->treenode->data[i] > minNode2->treenode->data[i])
+        {  PrintAnswer(head, minNode1, minNode2); return;  }
+        else i++;
+    }
+    return;
 }
 #endif
 
 #ifdef TEST_DIST
 int FindDist(TreeNode* x, TreeNode* y)
 {
-	//find the eucledian distance between
-	// x->data and y->data
-	// DO NOT FIND SQUARE ROOT (we are working with int)
-	// return the distance
-	return EXIT_SUCCESS;
+	// Find the eucledian distance between x->data and y->data
+    int distance = 0;
+    for(int i=0; i<x->dimension; i++)
+    {  distance+=(x->data[i]-y->data[i])*(x->data[i]-y->data[i]);  }
+	return (int)distance;
 }
 #endif
 
@@ -84,7 +123,7 @@ ListNode * CreateNode(int n, int dim, int* arr)
 	newTNode->right = NULL;
 	newTNode->data = malloc(sizeof(int)*(dim));
 	for(int i=0; i<newTNode->dimension; i++)
-  {  memcpy(&newTNode->data[i], &arr[i], 1);  }
+    {  memcpy(&newTNode->data[i], &arr[i], 1);  }
 	newLNode->treenode = newTNode;
 	return newLNode;
 }

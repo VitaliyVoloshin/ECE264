@@ -5,6 +5,16 @@
 #include "hw18.h"
 
 #ifdef TEST_MAIN
+void cleanup(ListNode * head)
+{
+    ListNode * tmpNode = head;
+    while(tmpNode->next != NULL)
+    {
+        head = tmpNode->next;
+        free(tmpNode->treenode->data);
+    }
+    return;
+}
 int main(int argc, char * * argv)
 {
   // Check for input error
@@ -18,23 +28,21 @@ int main(int argc, char * * argv)
   int n = 0;
   if(fscanf(fptr,"%d",&n) != 1)
   {  fclose(fptr); return EXIT_FAILURE;  }
-  printf("n value: %d\n",n);
 
 	// dim is the second element in the file
   int dim = 0;
   if(fscanf(fptr,"%d",&dim) != 1)
   {  fclose(fptr); return EXIT_FAILURE;  }
-  printf("dim value: %d\n",dim);
 
   // Call LinkedListCreate
   ListNode * head = NULL;
   LinkedListCreate(&head, n, dim, fptr);
-
-	// Call FindMin
-  //FindMin(head);
+  
+  // Call FindMin
+  FindMin(head);
 
   // Cleanup
-  //fclose(fptr);
+  cleanup(head);
   return EXIT_SUCCESS;
 }
 #endif
