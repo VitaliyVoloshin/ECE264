@@ -7,11 +7,15 @@
 #ifdef TEST_MAIN
 void cleanup(ListNode * head)
 {
+    if(head == NULL) return;
     ListNode * tmpNode = head;
     while(tmpNode->next != NULL)
     {
-        head = tmpNode->next;
         free(tmpNode->treenode->data);
+        free(tmpNode->treenode);
+        head = tmpNode->next;
+        cleanup(head);
+        free(tmpNode);
     }
     return;
 }
@@ -23,13 +27,13 @@ int main(int argc, char * * argv)
   // Open the file
   FILE * fptr = fopen(argv[1], "r");
   if(fptr==NULL) return EXIT_FAILURE;
-
-	// n is the first element in the file
+  
+  // n is the first element in the file
   int n = 0;
   if(fscanf(fptr,"%d",&n) != 1)
   {  fclose(fptr); return EXIT_FAILURE;  }
 
-	// dim is the second element in the file
+  // dim is the second element in the file
   int dim = 0;
   if(fscanf(fptr,"%d",&dim) != 1)
   {  fclose(fptr); return EXIT_FAILURE;  }
@@ -42,7 +46,7 @@ int main(int argc, char * * argv)
   FindMin(head);
 
   // Cleanup
-  cleanup(head);
+  //cleanup(head);
   return EXIT_SUCCESS;
 }
 #endif

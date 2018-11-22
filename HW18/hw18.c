@@ -52,50 +52,53 @@ void PrintAnswer(ListNode* head, ListNode* min1, ListNode* min2)
 void FindMin(ListNode* head)
 {
 	// Find pair of ListNodes with least distance between them
-    int minDis = 0;
+    int minDis = -1;
     int tmpDis = 0;
     int i = 0;
-    ListNode * tmp1 = head;
-    ListNode * tmp2 = NULL;
+    int minInd1 = 0;
+    int minInd2 = 0;
     ListNode * minNode1 = NULL;
     ListNode * minNode2 = NULL;
+    ListNode * tmp1 = head;
+    ListNode * tmp2 = NULL;
+    int index1 = 0;
+    int index2 = 0;
 	while(tmp1->next != NULL)
     {
+        index2=index1+1;
         tmp2 = tmp1->next;
-        if(tmp2->next == NULL)
+        while(tmp2 != NULL)
         {
-            tmpDis = FindDist(tmp1->treenode,tmp2->treenode);
-            if(tmpDis < minDis)
+            tmpDis = (int)FindDist(tmp1->treenode,tmp2->treenode);
+            if((tmpDis < minDis) || (minDis == -1))
             {  
-                minNode1 = tmp1;
-                minNode2 = tmp2;
-                minDis = tmpDis;
-            }
-            break;
-        }
-        while(tmp2->next != NULL)
-        {
-            tmpDis = FindDist(tmp1->treenode,tmp2->treenode);
-            if(tmpDis < minDis)
-            {  
-                minNode1 = tmp1;
-                minNode2 = tmp2;
+                minInd1 = index1;
+                minInd2 = index2;
                 minDis = tmpDis;
             }
             tmp2=tmp2->next;
+            index2+=1;
         }
         tmp1 = tmp1->next;
+        index1+=1;
     }
-    
+
+    // Point to the right min Nodes
+    i=0;
+    minNode1 = head;
+    while(i<minInd1) {  minNode1=minNode1->next; i++;  }
+    i=0;
+    minNode2 = head;
+    while(i<minInd2) {  minNode2=minNode2->next; i++;  }
+
 	// Call print function
-    tmp1 = minNode1;
-    tmp2 = minNode2;
+    i=0;
     while(i<head->treenode->dimension)
     {
         if(minNode1->treenode->data[i] < minNode2->treenode->data[i])
-        {  PrintAnswer(head, minNode2, minNode1); return;  }
-        else if(minNode1->treenode->data[i] > minNode2->treenode->data[i])
         {  PrintAnswer(head, minNode1, minNode2); return;  }
+        else if(minNode1->treenode->data[i] > minNode2->treenode->data[i])
+        {  PrintAnswer(head, minNode2, minNode1); return;  }
         else i++;
     }
     return;
@@ -106,9 +109,13 @@ void FindMin(ListNode* head)
 int FindDist(TreeNode* x, TreeNode* y)
 {
 	// Find the eucledian distance between x->data and y->data
-    int distance = 0;
+    long long int distance = 0;
+    long long int tmp = 0;
     for(int i=0; i<x->dimension; i++)
-    {  distance+=(x->data[i]-y->data[i])*(x->data[i]-y->data[i]);  }
+    {  
+        tmp = (x->data[i]) - (y->data[i]);
+        distance += (tmp*tmp);
+    }
 	return (int)distance;
 }
 #endif
@@ -130,6 +137,21 @@ ListNode * CreateNode(int n, int dim, int* arr)
 #endif
 
 #ifdef TEST_LINKEDLISTCREATE
+// Reverse a linked list
+void reverseLinkedList(ListNode ** head)
+{
+    ListNode * prev = NULL;
+    ListNode * curr = *head;
+    ListNode * next = NULL;
+    while(curr != NULL)
+    {
+        next = curr->next;
+        curr->next = prev;
+        prev = curr;
+        curr = next;
+    }
+    *head = prev;
+}
 // Fill an array with count integers from a file
 void fillArray(int * arr, int count, FILE * fptr)
 {
@@ -141,6 +163,7 @@ void fillArray(int * arr, int count, FILE * fptr)
         ind++;
     }
 }
+// Create a linked list of arrays by reading from a file
 void LinkedListCreate(ListNode ** head, int n, int dim, FILE * fptr)
 {
 	// malloc an array of length dim
@@ -156,6 +179,7 @@ void LinkedListCreate(ListNode ** head, int n, int dim, FILE * fptr)
 		*head = newLNode;
 		i+=1;
 	}
+    reverseLinkedList(head);
 	fclose(fptr);
 }
 #endif
