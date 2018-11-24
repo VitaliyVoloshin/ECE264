@@ -2,7 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <limits.h>
-#include "hw18.h"
+#include "hw19.h"
 
 #ifdef TEST_MAIN
 void freeTree(TreeNode * tnode)
@@ -28,8 +28,8 @@ int main(int argc, char * * argv)
   // Open the file
   FILE * fptr = fopen(argv[1], "r");
   if(fptr==NULL) return EXIT_FAILURE;
-  
-  // n is the first element in the file
+
+	// n is the first element in the file
   int n = 0;
   if(fscanf(fptr,"%d",&n) != 1)
   {  fclose(fptr); return EXIT_FAILURE;  }
@@ -42,9 +42,9 @@ int main(int argc, char * * argv)
   // Call LinkedListCreate
   ListNode * head = NULL;
   LinkedListCreate(&head, n, dim, fptr);
-  
-  // Call FindMin
-  FindMin(head);
+
+	// Call MakeCluster
+	MakeCluster(&head);
 
   // Cleanup
   cleanup(head);

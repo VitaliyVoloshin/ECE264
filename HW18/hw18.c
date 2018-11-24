@@ -65,16 +65,19 @@ void FindMin(ListNode* head)
     int index2 = 0;
 	while(tmp1->next != NULL)
     {
-        index2=index1+1;
-        tmp2 = tmp1->next;
+        index2=0;
+        tmp2 = head;
         while(tmp2 != NULL)
         {
-            tmpDis = (int)FindDist(tmp1->treenode,tmp2->treenode);
-            if((tmpDis < minDis) || (minDis == -1))
-            {  
-                minInd1 = index1;
-                minInd2 = index2;
-                minDis = tmpDis;
+            if(index1 != index2)
+            {
+                tmpDis = FindDist(tmp1->treenode,tmp2->treenode);
+                if((tmpDis < minDis) || (minDis == -1))
+                {  
+                    minInd1 = index1;
+                    minInd2 = index2;
+                    minDis = tmpDis;
+                }
             }
             tmp2=tmp2->next;
             index2+=1;
@@ -109,14 +112,14 @@ void FindMin(ListNode* head)
 int FindDist(TreeNode* x, TreeNode* y)
 {
 	// Find the eucledian distance between x->data and y->data
-    long long int distance = 0;
-    long long int tmp = 0;
+    long int distance = 0;
+    long int tmp = 0;
     for(int i=0; i<x->dimension; i++)
     {  
-        tmp = (x->data[i]) - (y->data[i]);
+        tmp = (y->data[i]) - (x->data[i]);
         distance += (tmp*tmp);
     }
-	return (int)distance;
+	return distance;
 }
 #endif
 
@@ -179,6 +182,7 @@ void LinkedListCreate(ListNode ** head, int n, int dim, FILE * fptr)
 		*head = newLNode;
 		i+=1;
 	}
+    free(arr);
     reverseLinkedList(head);
 	fclose(fptr);
 }
