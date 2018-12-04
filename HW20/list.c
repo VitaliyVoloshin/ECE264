@@ -62,6 +62,7 @@ ListNode * MergeListNode(ListNode * head)
     new merged TreeNode. This function should maintain the same aforementioned order.
     Please read Huffman coding for understanding the functionality of this function.
   */
+  return NULL;
 
 }
 #endif

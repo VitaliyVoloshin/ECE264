@@ -3,31 +3,72 @@
 #include "list.h"
 #include "utility.h"
 
-
-/*
-------------------------------------------------------------------------------
-You Can Modify below, Do Not modify above this
-------------------------------------------------------------------------------
-*/
-
 #ifdef TEST_READHEADER
+int CountNodes(ListNode * head)
+{
+  int nodes = 0;
+  while(head != NULL)
+  {  head=head->next; nodes++;  }
+  return nodes;
+}
+
+ListNode * PopLList(ListNode * head)
+{
+  ListNode * list_pop = head;
+  if (head->next != NULL) *head = *head->next;
+  return list_pop;
+}
 
 TreeNode * readHeader(FILE * infptr)
 {
-	/* This function should have the following logic
-	 * The first bit is a command bit and it is always 1.
-	 * If a command is 1, then the next 8 bits(for this assignment) are the value stored
-	 	 in a leaf node. Create a tree node to store this value. Add this tree node to the
-		 beginning of the linked list (basically, LinkedList is acting like a stack here).
-     This tree node is a single-node tree.  
-	 * If a command is 0 and the list has two or more nodes, then take the first two nodes from
-	 	 the list, create a tree node as the parent. Add this parent node to the linked list.
-   * If a command is 0 and the list has only one node, then the complete tree has been built.
-	 * After the tree is completely built, then read one more bit. If this is not the last
-	 	 (rightmost) bit of the byte, discard the remaining bits in the byte.
-	*/
-}
+  TreeNode * tree_head = NULL;
+  TreeNode * tempTreeNode = NULL;
+  TreeNode * tempTreeNodeL = NULL;
+  TreeNode * tempTreeNodeR = NULL;
+  ListNode * list_head = ListNode_create(tree_head);
+  ListNode * tempListNode = NULL;
+  ListNode * tempListNodeL = NULL;
+  ListNode * tempListNodeR = NULL;
+  unsigned char bit=0, whichbit=0, curbyte = 0, packet=0x00;
+  unsigned int i;
 
+  while(readBit(infptr, &bit, &whichbit, &curbyte) != -1)
+  {
+    if(bit == 1)
+    {
+      // Clear the packet
+      packet=0;
+      // Mask the packet
+      for(i=0;i<8;i++)
+      {
+        readBit(infptr, &bit, &whichbit, &curbyte);
+        packet |= ((0x01&bit) << (whichbit));
+      }
+      printf("%c\n",packet);
+      tempTreeNode = TreeNode_create((unsigned char)packet, 0);
+      tempListNode = ListNode_create(tempTreeNode);
+      list_head = List_insert(list_head,tempListNode);
+    }
+    else if(bit == 0)
+    {
+      // If length of list == 1, return tree_head
+      if(CountNodes(list_head) == 1) return list_head->tnptr;
+      else if(CountNodes(list_head) > 1)
+      {
+        // Remove two nodes from linked list
+        tempListNodeR = PopLList(list_head);
+        tempListNodeL = PopLList(list_head);
+        tempTreeNodeR = tempListNodeR->tnptr;
+        tempTreeNodeL = tempListNodeL->tnptr;
+        // Create parent tree node
+        tempTreeNode = Tree_merge(tempTreeNodeL, tempTreeNodeR);
+        // Add parent to linked list
+        list_head = List_insert(list_head,ListNode_create(tempTreeNode));
+      }
+    }
+  }
+  return list_head->tnptr;
+}
 #endif
 
 
@@ -35,14 +76,19 @@ TreeNode * readHeader(FILE * infptr)
 
 int decode(char * infile, char * outfile)
 {
-	// read the header from the input file  by calling readHeader function
-	// the generated tree from the header generated should be printed in outfile
-	// to print the tree into the file use Tree_print function given to you.
-  // After reading the header till codebook, read the next 4 bytes from the header,
-  // these 4 bytes represent number of characters in the file.
-  // Print the number of characters obtained by using the PrintNumberChar function
-	// Do not use your own print functions
-	// free up the memory
+  // Read the header from input file
+  FILE * finput = fopen(infile,"r");
+  if(finput==NULL) return EXIT_FAILURE;
+  TreeNode * tn_input = readHeader(finput);
+  // Print generated tree from the header to outfile
+  FILE * foutput = fopen(outfile,"w");
+  if(foutput==NULL) return EXIT_FAILURE;
+  Tree_print(tn_input, foutput);
 
+  // Read the next four bytes from header (number of chars in file)
+  int numChars = 0;
+  if(fscanf(finput,"%d",&numChars)!=1) return EXIT_FAILURE;
+  PrintNumberChar(numChars, foutput);
+  return EXIT_SUCCESS;
 }
 #endif
